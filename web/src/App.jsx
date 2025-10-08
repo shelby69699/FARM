@@ -56,7 +56,7 @@ function App() {
           {/* Header */}
           <header className="text-center mb-12">
             <div className="flex items-center justify-center mb-6">
-              <img src="/farm-labs-logo.svg" alt="Farm Labs" className="w-32 h-32" />
+              <img src="/13892451-72e9-4ce0-a737-b8b5e1a68602.SVG.png" alt="Farm Labs" className="w-32 h-32" />
             </div>
             <h1 className="text-8xl font-bold mb-4 bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan bg-clip-text text-transparent font-display tracking-tight">
               FARM LABS
