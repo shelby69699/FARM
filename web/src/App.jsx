@@ -84,14 +84,14 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-zinc-950 via-zinc-900 to-black">
-      <div className="flex-grow py-2 px-4">
+      <div className="flex-grow px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <header className="text-center mb-12 relative">
+          <header className="text-center pt-2 mb-4 relative">
             {/* Info Button - Top Right */}
             <button
               onClick={() => setShowInfo(true)}
-              className="absolute top-0 right-0 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-lg transition-all text-sm text-gray-400 hover:text-white flex items-center gap-2"
+              className="absolute top-2 right-0 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-lg transition-all text-sm text-gray-400 hover:text-white flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -99,10 +99,10 @@ function App() {
               How It Works
             </button>
 
-            <div className="flex items-center justify-center mb-1">
+            <div className="flex items-center justify-center mb-0">
               <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-96 h-96" />
             </div>
-            <div className="mb-2">
+            <div className="mb-1">
               <h1 className="text-9xl font-bold font-display tracking-tight animated-title leading-none">
                 HOOKED
               </h1>
@@ -115,8 +115,8 @@ function App() {
             </p>
           </header>
 
-        {/* Wallet Connection */}
-        <div className="mb-8 mt-32">
+        {/* Wallet Connection - Centered on Page */}
+        <div className="flex items-center justify-center min-h-[40vh]">
           <WalletConnect 
             onConnect={setLucid} 
             onDisconnect={() => {
