@@ -81,58 +81,151 @@ code {
   animation: shimmer 3s linear infinite, pulse-glow 2s ease-in-out infinite;
 }
 
-/* Beaker Animations */
+/* Professional Beaker Animations */
+
+/* Sophisticated bubble physics */
 @keyframes bubble-rise {
   0% {
-    transform: translateY(0) scale(0.8);
+    transform: translateY(0) scale(0.4) rotate(0deg);
     opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
   }
   50% {
     opacity: 1;
+    transform: translateY(-100px) scale(1) rotate(180deg);
   }
   100% {
-    transform: translateY(-200px) scale(1.2);
+    transform: translateY(-220px) scale(1.5) rotate(360deg);
     opacity: 0;
   }
 }
 
+/* Liquid surface oscillation */
 @keyframes liquid-bubble {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(0) scaleY(1);
   }
-  50% {
-    transform: translateY(-5px);
+  25% {
+    transform: translateY(-3px) scaleY(0.98);
+  }
+  75% {
+    transform: translateY(3px) scaleY(1.02);
   }
 }
 
+/* Enhanced particle trails */
 @keyframes particle-float {
   0% {
-    transform: translateY(0) translateX(0) scale(1);
+    transform: translateY(0) translateX(0) scale(1) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
     opacity: 1;
   }
+  50% {
+    opacity: 0.8;
+  }
   100% {
-    transform: translateY(-300px) translateX(var(--float-x)) scale(0.3);
+    transform: translateY(-350px) translateX(var(--float-x)) scale(0.2) rotate(720deg);
     opacity: 0;
   }
 }
 
+/* Intense glow pulse */
 @keyframes glow-pulse {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+    box-shadow: 
+      0 0 20px rgba(255, 0, 255, 0.4),
+      0 0 40px rgba(255, 0, 255, 0.2),
+      inset 0 0 30px rgba(255, 0, 255, 0.1);
   }
   50% {
-    box-shadow: 0 0 40px rgba(255, 0, 255, 0.6);
+    box-shadow: 
+      0 0 40px rgba(255, 0, 255, 0.8),
+      0 0 80px rgba(255, 0, 255, 0.4),
+      inset 0 0 60px rgba(255, 0, 255, 0.2);
   }
 }
 
+/* Realistic steam/vapor */
 @keyframes steam-rise {
   0% {
-    transform: translateY(0) scale(1);
-    opacity: 0.6;
+    transform: translateY(0) translateX(0) scale(0.8);
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.4;
   }
   100% {
-    transform: translateY(-100px) scale(2);
+    transform: translateY(-120px) translateX(var(--steam-drift)) scale(2.5);
     opacity: 0;
+  }
+}
+
+/* Energy ring expansion */
+@keyframes energy-ring {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Reaction glow at base */
+@keyframes reaction-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 30px rgba(255, 0, 255, 0.6),
+      0 0 60px rgba(255, 0, 255, 0.4),
+      0 0 90px rgba(255, 0, 255, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 50px rgba(0, 255, 255, 0.6),
+      0 0 100px rgba(0, 255, 255, 0.4),
+      0 0 150px rgba(0, 255, 255, 0.2);
+  }
+}
+
+/* Heat distortion effect */
+@keyframes heat-wave {
+  0%, 100% {
+    transform: translateX(-2px) scaleX(1);
+  }
+  25% {
+    transform: translateX(2px) scaleX(1.02);
+  }
+  75% {
+    transform: translateX(-2px) scaleX(0.98);
+  }
+}
+
+/* Sparkle effect */
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+/* Production intensity pulse */
+@keyframes production-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
   }
 }
 
