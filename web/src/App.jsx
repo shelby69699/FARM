@@ -84,10 +84,10 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-zinc-950 via-zinc-900 to-black">
-      <div className="flex-grow py-6 px-4">
+      <div className="flex-grow py-2 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <header className="text-center mb-24 relative">
+          <header className="text-center mb-12 relative">
             {/* Info Button - Top Right */}
             <button
               onClick={() => setShowInfo(true)}
@@ -99,14 +99,14 @@ function App() {
               How It Works
             </button>
 
-            <div className="flex items-center justify-center mb-3">
+            <div className="flex items-center justify-center mb-1">
               <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-96 h-96" />
             </div>
-            <div className="mb-4">
+            <div className="mb-2">
               <h1 className="text-9xl font-bold font-display tracking-tight animated-title leading-none">
                 HOOKED
               </h1>
-              <p className="text-3xl font-medium text-gray-400 mt-2">
+              <p className="text-3xl font-medium text-gray-400 mt-1">
                 BY FARM LABS
               </p>
             </div>
@@ -116,7 +116,7 @@ function App() {
           </header>
 
         {/* Wallet Connection */}
-        <div className="mb-8">
+        <div className="mb-8 mt-32">
           <WalletConnect 
             onConnect={setLucid} 
             onDisconnect={() => {
