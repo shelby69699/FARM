@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import AdminDashboard from './AdminDashboard';
-import Beaker3D from './Beaker3D';
 import BoosterPack from './BoosterPack';
 
 function Lab({ address, onBack, isAdmin, lucid }) {
@@ -277,36 +276,84 @@ function Lab({ address, onBack, isAdmin, lucid }) {
 
         </div>
 
-        {/* RIGHT SIDE - 3D Model Area */}
+        {/* RIGHT SIDE - Farm Visualization */}
         <div className="lg:col-span-8">
           <div className="bg-black rounded-2xl border border-zinc-800 h-[calc(100vh-8rem)] overflow-hidden relative">
-            {/* 3D Scene Container */}
-            <div className="absolute inset-0">
-              {/* 3D Beaker */}
-              <Beaker3D power={state.basePower} pending={state.pending} />
-              
-              {/* Floating Stats Overlay */}
-              <div className="absolute top-6 right-6 bg-black/80 backdrop-blur-md rounded-xl px-4 py-3 border border-farm-pink/30 shadow-lg">
-                <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Power Level</div>
-                <div className="text-2xl font-bold text-farm-pink">{state.basePower}</div>
-              </div>
-              
-              <div className="absolute bottom-6 left-6 bg-black/80 backdrop-blur-md rounded-xl px-4 py-3 border border-farm-cyan/30 shadow-lg">
-                <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Pending Rewards</div>
-                <div className="text-2xl font-bold text-farm-cyan">{state.pending.toFixed(2)} <span className="text-sm text-gray-500">COKE</span></div>
-              </div>
+            {/* Animated Beaker Visualization */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative">
+                {/* CSS Beaker */}
+                <div className="relative w-64 h-80">
+                  {/* Beaker Container */}
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-48 h-64">
+                    {/* Glass Beaker */}
+                    <div className="relative w-full h-full border-4 border-gray-400/40 rounded-b-3xl bg-gradient-to-b from-transparent to-zinc-900/20"
+                         style={{ clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)' }}>
+                      
+                      {/* Liquid Inside */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-farm-pink via-farm-purple to-transparent rounded-b-3xl transition-all duration-1000"
+                           style={{ 
+                             height: `${Math.min((state.pending / 100) * 60 + 20, 80)}%`,
+                             opacity: 0.6,
+                             boxShadow: '0 0 40px rgba(255, 0, 255, 0.5)'
+                           }}>
+                        {/* Bubbles */}
+                        {[...Array(6)].map((_, i) => (
+                          <div key={i} 
+                               className="absolute w-2 h-2 bg-white/40 rounded-full animate-pulse"
+                               style={{
+                                 left: `${20 + i * 15}%`,
+                                 bottom: `${10 + (i % 3) * 20}%`,
+                                 animationDelay: `${i * 0.3}s`,
+                                 animationDuration: `${2 + (i % 2)}s`
+                               }}
+                          />
+                        ))}
+                      </div>
 
-              {/* Status Indicator */}
-              <div className="absolute top-6 left-6 flex items-center gap-2 bg-black/80 backdrop-blur-md rounded-xl px-4 py-2 border border-green-500/30">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-xs text-green-400 font-medium">ACTIVE</span>
-              </div>
+                      {/* Measurement Lines */}
+                      {[25, 50, 75].map((height, i) => (
+                        <div key={i} 
+                             className="absolute left-0 right-0 border-t border-cyan-500/30"
+                             style={{ bottom: `${height}%` }}>
+                          <span className="absolute -right-8 -top-2 text-[10px] text-cyan-500/50">{height}</span>
+                        </div>
+                      ))}
+                    </div>
 
-              {/* Lab Info */}
-              <div className="absolute bottom-6 right-6 text-right">
-                <div className="text-xs text-gray-600">Farm Level</div>
-                <div className="text-lg font-bold text-white">Level 1</div>
+                    {/* Beaker Top */}
+                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-40 h-4 border-t-4 border-x-4 border-gray-400/40 rounded-t-lg"></div>
+                  </div>
+
+                  {/* Cardano Logo Above */}
+                  <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 w-16 h-16 opacity-20">
+                    <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Logo" className="w-full h-full" />
+                  </div>
+                </div>
               </div>
+            </div>
+              
+            {/* Floating Stats Overlay */}
+            <div className="absolute top-6 right-6 bg-black/80 backdrop-blur-md rounded-xl px-4 py-3 border border-farm-pink/30 shadow-lg">
+              <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Power Level</div>
+              <div className="text-2xl font-bold text-farm-pink">{state.basePower}</div>
+            </div>
+            
+            <div className="absolute bottom-6 left-6 bg-black/80 backdrop-blur-md rounded-xl px-4 py-3 border border-farm-cyan/30 shadow-lg">
+              <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Pending Rewards</div>
+              <div className="text-2xl font-bold text-farm-cyan">{state.pending.toFixed(2)} <span className="text-sm text-gray-500">COKE</span></div>
+            </div>
+
+            {/* Status Indicator */}
+            <div className="absolute top-6 left-6 flex items-center gap-2 bg-black/80 backdrop-blur-md rounded-xl px-4 py-2 border border-green-500/30">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-xs text-green-400 font-medium">ACTIVE</span>
+            </div>
+
+            {/* Lab Info */}
+            <div className="absolute bottom-6 right-6 text-right">
+              <div className="text-xs text-gray-600">Farm Level</div>
+              <div className="text-lg font-bold text-white">Level 1</div>
             </div>
           </div>
         </div>
