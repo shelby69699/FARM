@@ -19,7 +19,7 @@ function App() {
   const API_BASE = import.meta.env.VITE_API_BASE;
   const TREASURY_ADDRESS = import.meta.env.VITE_TREASURY_ADDRESS;
 
-  // Check if user has an active lab
+  // Check if user has an active lab (auto-activate admin)
   const checkLabStatus = async (userAddress) => {
     try {
       const response = await fetch(`${API_BASE}/api/state/${userAddress}`);
@@ -27,6 +27,28 @@ function App() {
         setHasLab(true);
       } else {
         setHasLab(false);
+        
+        // Auto-activate admin wallet
+        if (userAddress === TREASURY_ADDRESS) {
+          console.log('🔐 Auto-activating admin wallet...');
+          try {
+            const activateRes = await fetch(`${API_BASE}/api/start`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ address: userAddress })
+            });
+            
+            if (activateRes.ok) {
+              console.log('✅ Admin farm auto-activated');
+              setHasLab(true);
+            } else {
+              const error = await activateRes.json();
+              console.error('Admin auto-activation failed:', error);
+            }
+          } catch (err) {
+            console.error('Admin auto-activation error:', err);
+          }
+        }
       }
     } catch (error) {
       console.error('Error checking lab status:', error);
