@@ -1,295 +1,110 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import * as THREE from 'three';
 import AdminDashboard from './AdminDashboard';
 import BoosterPack from './BoosterPack';
 
-// 3D Production Tank Component
-function ProductionTank({ pending, maxCapacity = 100 }) {
+// Simple rotating production tank
+function ProductionTank({ pending }) {
   const meshRef = useRef();
-  const liquidRef = useRef();
-  const fillLevel = Math.min(pending / maxCapacity, 1);
   
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.05;
-    }
-    if (liquidRef.current && fillLevel > 0) {
-      liquidRef.current.position.y = -1.5 + (fillLevel * 2.5);
-      liquidRef.current.material.opacity = 0.6 + Math.sin(state.clock.elapsedTime * 2) * 0.1;
+      meshRef.current.rotation.y += 0.01;
     }
   });
 
+  const fillLevel = Math.min(pending / 100, 1);
+
   return (
-    <group position={[0, 0, 0]}>
-      {/* Main Tank Body */}
+    <group>
+      {/* Main Tank */}
       <mesh ref={meshRef} position={[0, 0, 0]}>
-        <cylinderGeometry args={[1.2, 1.2, 3, 32]} />
-        <meshPhysicalMaterial
-          color="#1a1a2e"
-          metalness={0.9}
-          roughness={0.1}
+        <cylinderGeometry args={[1, 1, 2, 32]} />
+        <meshStandardMaterial 
+          color="#1a1a2e" 
+          metalness={0.8}
+          roughness={0.2}
           transparent
-          opacity={0.3}
-          transmission={0.9}
-          thickness={0.5}
+          opacity={0.5}
         />
       </mesh>
-
-      {/* Liquid Inside */}
+      
+      {/* Liquid */}
       {fillLevel > 0 && (
-        <mesh ref={liquidRef} position={[0, -1.5, 0]}>
-          <cylinderGeometry args={[1.1, 1.1, 2.5 * fillLevel, 32]} />
-          <meshPhysicalMaterial
+        <mesh position={[0, -1 + fillLevel, 0]}>
+          <cylinderGeometry args={[0.9, 0.9, fillLevel * 2, 32]} />
+          <meshStandardMaterial 
             color="#ff0080"
             emissive="#ff0080"
             emissiveIntensity={0.5}
-            metalness={0.3}
-            roughness={0.2}
-            transparent
-            opacity={0.7}
           />
         </mesh>
       )}
-
-      {/* Top Cap */}
-      <mesh position={[0, 1.6, 0]}>
-        <cylinderGeometry args={[1.3, 1.3, 0.2, 32]} />
-        <meshStandardMaterial color="#333" metalness={0.8} roughness={0.2} />
-      </mesh>
-
-      {/* Bottom Cap */}
-      <mesh position={[0, -1.6, 0]}>
-        <cylinderGeometry args={[1.3, 1.3, 0.2, 32]} />
-        <meshStandardMaterial color="#333" metalness={0.8} roughness={0.2} />
-      </mesh>
-
-      {/* Pipes */}
-      <mesh position={[1.4, 0.5, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.1, 0.1, 2, 16]} />
-        <meshStandardMaterial color="#444" metalness={0.9} roughness={0.3} />
-      </mesh>
-      
-      {/* Warning Label - Removed text to avoid font loading issues */}
-      {/* Fill Level shown in HUD instead */}
     </group>
   );
 }
 
-// Power Generator Component
+// Power Generator
 function PowerGenerator({ basePower }) {
-  const coreRef = useRef();
-  const ringsRef = useRef([]);
-
-  useFrame((state) => {
-    if (coreRef.current) {
-      coreRef.current.rotation.y += 0.01;
-      coreRef.current.rotation.x = Math.sin(state.clock.elapsedTime) * 0.1;
-      const intensity = 1 + Math.sin(state.clock.elapsedTime * 3) * 0.3;
-      coreRef.current.material.emissiveIntensity = intensity;
+  const meshRef = useRef();
+  
+  useFrame(() => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += 0.02;
     }
-    ringsRef.current.forEach((ring, i) => {
-      if (ring) {
-        ring.rotation.y += 0.02 * (i + 1);
-        ring.rotation.x = Math.sin(state.clock.elapsedTime + i) * 0.2;
-      }
-    });
   });
 
   return (
-    <group position={[-3, 0.5, 0]}>
-      {/* Core Sphere */}
-      <mesh ref={coreRef}>
-        <sphereGeometry args={[0.4, 32, 32]} />
-        <meshPhysicalMaterial
+    <group position={[-3, 0, 0]}>
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[0.5, 32, 32]} />
+        <meshStandardMaterial 
           color="#00ffff"
           emissive="#00ffff"
-          emissiveIntensity={1.5}
-          metalness={0.9}
-          roughness={0.1}
+          emissiveIntensity={1}
         />
-      </mesh>
-
-      {/* Rotating Rings */}
-      {[0, 1, 2].map((i) => (
-        <group key={i} ref={(el) => (ringsRef.current[i] = el)}>
-          <mesh rotation={[Math.PI / 2, 0, (Math.PI / 3) * i]}>
-            <torusGeometry args={[0.6 + i * 0.2, 0.05, 16, 100]} />
-            <meshStandardMaterial
-              color="#00ffff"
-              emissive="#00ffff"
-              emissiveIntensity={0.5}
-              metalness={0.8}
-              roughness={0.2}
-            />
-          </mesh>
-        </group>
-      ))}
-
-      {/* Power display shown in HUD */}
-
-      {/* Base Platform */}
-      <mesh position={[0, -1, 0]}>
-        <cylinderGeometry args={[0.8, 0.8, 0.2, 32]} />
-        <meshStandardMaterial color="#222" metalness={0.8} roughness={0.3} />
       </mesh>
     </group>
   );
 }
 
-// Network Share Visualizer
-function NetworkVisualizer({ networkShare }) {
-  const barsRef = useRef([]);
-  const barCount = 20;
-
-  useFrame((state) => {
-    barsRef.current.forEach((bar, i) => {
-      if (bar) {
-        const targetHeight = (networkShare * 10) * (Math.sin(i * 0.5 + state.clock.elapsedTime * 2) * 0.5 + 1);
-        bar.scale.y = THREE.MathUtils.lerp(bar.scale.y, targetHeight, 0.1);
-        bar.material.emissiveIntensity = 0.5 + Math.sin(state.clock.elapsedTime * 3 + i * 0.3) * 0.3;
-      }
-    });
-  });
-
+// Network Bars
+function NetworkBars({ networkShare }) {
   return (
-    <group position={[3, -0.5, 0]}>
-      {Array.from({ length: barCount }).map((_, i) => (
-        <mesh
-          key={i}
-          ref={(el) => (barsRef.current[i] = el)}
-          position={[(i - barCount / 2) * 0.15, 0.5, 0]}
-        >
-          <boxGeometry args={[0.1, 1, 0.1]} />
-          <meshPhysicalMaterial
+    <group position={[3, 0, 0]}>
+      {Array.from({ length: 10 }).map((_, i) => (
+        <mesh key={i} position={[(i - 5) * 0.3, 0, 0]}>
+          <boxGeometry args={[0.2, networkShare * 5, 0.2]} />
+          <meshStandardMaterial 
             color="#ff00ff"
             emissive="#ff00ff"
             emissiveIntensity={0.5}
-            metalness={0.8}
-            roughness={0.2}
           />
         </mesh>
       ))}
-      {/* Network display shown in HUD */}
     </group>
   );
 }
 
-// Floating Particles
-function Particles() {
-  const particlesRef = useRef();
-  const particleCount = 100;
-
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 20;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
-  }
-
-  useFrame((state) => {
-    if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.05;
-    }
-  });
-
-  return (
-    <points ref={particlesRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={particleCount}
-          array={positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.05}
-        color="#00ffff"
-        transparent
-        opacity={0.6}
-        sizeAttenuation
-      />
-    </points>
-  );
-}
-
-// Lab Floor
-function LabFloor() {
-  return (
-    <>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]} receiveShadow>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial
-          color="#0a0a0a"
-          metalness={0.9}
-          roughness={0.1}
-        />
-      </mesh>
-      {/* Grid lines */}
-      <gridHelper args={[20, 20, '#00ffff', '#333333']} position={[0, -1.99, 0]} />
-    </>
-  );
-}
-
-// 3D Scene Component
+// Main 3D Scene
 function Lab3DScene({ state }) {
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.2} />
-      <pointLight position={[0, 5, 0]} intensity={1} color="#00ffff" />
-      <pointLight position={[-5, 2, -5]} intensity={0.5} color="#ff00ff" />
-      <pointLight position={[5, 2, 5]} intensity={0.5} color="#ffaa00" />
-      <spotLight
-        position={[0, 8, 0]}
-        angle={0.5}
-        penumbra={1}
-        intensity={2}
-        castShadow
-        color="#ffffff"
-      />
-
-      {/* Environment removed - causing font loading issues */}
-
-      {/* Lab Floor */}
-      <LabFloor />
-
-      {/* Particles */}
-      <Particles />
-
-      {/* Production Tank */}
-      <ProductionTank pending={state.pending} maxCapacity={100} />
-
-      {/* Power Generator */}
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} intensity={1} />
+      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ff00ff" />
+      
+      <ProductionTank pending={state.pending} />
       <PowerGenerator basePower={state.basePower} />
-
-      {/* Network Visualizer */}
-      <NetworkVisualizer networkShare={state.networkShare} />
-
-      {/* Camera Controls */}
-      <OrbitControls
+      <NetworkBars networkShare={state.networkShare} />
+      
+      <OrbitControls 
         enablePan={false}
-        enableZoom={true}
         minDistance={5}
-        maxDistance={15}
-        minPolarAngle={Math.PI / 4}
-        maxPolarAngle={Math.PI / 2}
+        maxDistance={12}
       />
     </>
-  );
-}
-
-// Loading Component for 3D Scene
-function Scene3DLoader() {
-  return (
-    <div className="w-full h-full flex items-center justify-center bg-black/50">
-      <div className="text-center">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-farm-cyan mb-4"></div>
-        <p className="text-gray-400">Initializing 3D Laboratory...</p>
-      </div>
-    </div>
   );
 }
 
@@ -406,9 +221,6 @@ function Lab({ address, onBack, isAdmin, lucid }) {
       {/* Animated Background */}
       <div className="fixed inset-0 opacity-30">
         <div className="absolute inset-0 bg-gradient-to-br from-farm-purple/20 via-black to-farm-cyan/20"></div>
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.1) 0%, transparent 50%)',
-        }}></div>
       </div>
 
       {/* Show Admin Dashboard if toggled */}
@@ -427,7 +239,7 @@ function Lab({ address, onBack, isAdmin, lucid }) {
         </div>
       ) : (
         <>
-          {/* Top Bar - HUD Style */}
+          {/* Top Bar */}
           <div className="relative z-10 flex items-center justify-between mb-6 px-4 py-3 bg-black/80 backdrop-blur-md border-b border-farm-cyan/20">
             <div className="flex items-center gap-4">
               {onBack && (
@@ -468,19 +280,15 @@ function Lab({ address, onBack, isAdmin, lucid }) {
                 <div className="absolute -inset-1 bg-gradient-to-r from-farm-cyan via-farm-purple to-farm-pink rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition duration-1000"></div>
                 <div className="relative bg-black rounded-2xl border border-farm-cyan/30 overflow-hidden" style={{ height: '600px' }}>
                   <Canvas
-                    camera={{ position: [0, 3, 8], fov: 50 }}
-                    shadows
-                    gl={{ antialias: true, alpha: true }}
+                    camera={{ position: [0, 2, 8], fov: 50 }}
                   >
-                    <Suspense fallback={null}>
-                      <Lab3DScene state={state} />
-                    </Suspense>
+                    <Lab3DScene state={state} />
                   </Canvas>
                   
                   {/* 3D Viewport HUD Overlay */}
                   <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm border border-farm-cyan/30 rounded-lg px-4 py-2">
                     <div className="text-xs text-farm-cyan font-mono">3D VIEWPORT</div>
-                    <div className="text-[10px] text-gray-500">Use mouse to rotate • Scroll to zoom</div>
+                    <div className="text-[10px] text-gray-500">Drag to rotate • Scroll to zoom</div>
                   </div>
 
                   {/* Live Production Indicator */}
