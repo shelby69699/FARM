@@ -81,32 +81,34 @@ function App() {
         {/* Connected State */}
         {lucid && address && (
           <>
-            {/* If user has lab, show ONLY the lab dashboard */}
-            {hasLab ? (
-              <Lab 
-                address={address}
-                onBack={() => setHasLab(false)}
-              />
+            {/* Admin Only View (Treasury Wallet) */}
+            {isAdmin ? (
+              <div className="mb-8">
+                <AdminDashboard address={address} />
+              </div>
             ) : (
               <>
-                {/* Admin Panel (Treasury Wallet Only) */}
-                {isAdmin && (
-                  <div className="mb-8">
-                    <AdminDashboard address={address} />
-                  </div>
+                {/* If user has lab, show ONLY the lab dashboard */}
+                {hasLab ? (
+                  <Lab 
+                    address={address}
+                    onBack={() => setHasLab(false)}
+                  />
+                ) : (
+                  <>
+                    {/* Balance Card */}
+                    <div className="mb-8">
+                      <BalanceCard lucid={lucid} address={address} />
+                    </div>
+
+                    {/* Start Lab */}
+                    <StartLab 
+                      lucid={lucid} 
+                      address={address}
+                      onLabActivated={handleLabActivated}
+                    />
+                  </>
                 )}
-
-                {/* Balance Card */}
-                <div className="mb-8">
-                  <BalanceCard lucid={lucid} address={address} />
-                </div>
-
-                {/* Start Lab */}
-                <StartLab 
-                  lucid={lucid} 
-                  address={address}
-                  onLabActivated={handleLabActivated}
-                />
               </>
             )}
           </>
