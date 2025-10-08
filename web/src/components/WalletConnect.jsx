@@ -89,7 +89,6 @@ function WalletConnect({ onConnect, onDisconnect }) {
             <p className="text-farm-cyan animate-pulse">Connecting...</p>
           </div>
         )}
-      </div>
     </div>
   );
 }
