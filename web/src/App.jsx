@@ -109,13 +109,8 @@ function App() {
 
         {/* Not Connected State */}
         {!lucid && (
-          <div className="card text-center py-8">
-            <p className="text-lg text-gray-400 mb-3">
-              Connect your wallet to get started
-            </p>
-            <p className="text-sm text-gray-500">
-              You'll need COKE tokens to activate your lab
-            </p>
+          <div className="mb-8">
+            {/* Placeholder - wallet not connected */}
           </div>
         )}
 
