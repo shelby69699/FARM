@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function Lab({ address }) {
+function Lab({ address, onBack }) {
   const [state, setState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [claiming, setClaiming] = useState(false);
@@ -102,68 +102,81 @@ function Lab({ address }) {
 
   return (
     <div className="space-y-6">
-      {/* Lab Header */}
-      <div className="card glow-cyan">
-        <h2 className="text-4xl font-bold mb-3 text-center bg-gradient-to-r from-farm-cyan to-farm-pink bg-clip-text text-transparent">
-          Your Lab is Active
-        </h2>
-        <p className="text-center text-gray-500 text-sm">
-          Activated {formatDate(state.activatedAt)}
-        </p>
+      {/* Lab Header with Back Button */}
+      <div className="card border-farm-cyan/20">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-farm-cyan to-farm-pink bg-clip-text text-transparent">
+            Your Lab Dashboard
+          </h2>
+          {onBack && (
+            <button 
+              onClick={onBack}
+              className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
+            >
+              ← Back
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <p className="text-sm text-gray-500">
+            Active since {formatDate(state.activatedAt)}
+          </p>
+        </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {/* Grow Power */}
-        <div className="stat-box">
-          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">💪 Grow Power</p>
-          <p className="text-5xl font-bold text-farm-cyan">
+        <div className="bg-black rounded p-4 border border-zinc-800">
+          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">💪 Grow Power</p>
+          <p className="text-4xl font-bold text-farm-cyan">
             {state.basePower}
           </p>
         </div>
 
         {/* Pending Rewards */}
-        <div className="stat-box glow-pink border-farm-pink/30">
-          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">⏳ Pending</p>
-          <p className="text-5xl font-bold bg-gradient-to-r from-farm-pink to-farm-purple bg-clip-text text-transparent">
+        <div className="bg-black rounded p-4 border border-farm-pink/30">
+          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">⏳ Pending Rewards</p>
+          <p className="text-4xl font-bold text-farm-pink">
             {state.pending.toFixed(2)}
           </p>
-          <p className="text-sm text-gray-500 mt-2">COKE</p>
+          <p className="text-xs text-gray-600 mt-1">COKE</p>
         </div>
 
         {/* Total Claimed */}
-        <div className="stat-box">
-          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">✅ Claimed</p>
-          <p className="text-5xl font-bold text-green-400">
+        <div className="bg-black rounded p-4 border border-zinc-800">
+          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">✅ Total Claimed</p>
+          <p className="text-4xl font-bold text-green-400">
             {state.totalClaimed.toFixed(2)}
           </p>
-          <p className="text-sm text-gray-500 mt-2">COKE</p>
+          <p className="text-xs text-gray-600 mt-1">COKE</p>
         </div>
 
         {/* Network Share */}
-        <div className="stat-box">
-          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">🌐 Network Share</p>
-          <p className="text-4xl font-bold text-farm-purple">
+        <div className="bg-black rounded p-4 border border-zinc-800">
+          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">🌐 Network Share</p>
+          <p className="text-3xl font-bold text-farm-purple">
             {state.networkShare.toFixed(4)}%
           </p>
         </div>
 
         {/* Current Emission Rate */}
-        <div className="stat-box">
-          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">📊 Emission</p>
-          <p className="text-4xl font-bold text-yellow-400">
+        <div className="bg-black rounded p-4 border border-zinc-800">
+          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">📊 Emission Rate</p>
+          <p className="text-3xl font-bold text-yellow-400">
             {state.currentEmissionRate.toFixed(4)}
           </p>
-          <p className="text-sm text-gray-500 mt-2">COKE/sec</p>
+          <p className="text-xs text-gray-600 mt-1">COKE/sec</p>
         </div>
 
         {/* Next Halving */}
-        <div className="stat-box">
-          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">⏰ Halving In</p>
-          <p className="text-3xl font-bold text-orange-400">
+        <div className="bg-black rounded p-4 border border-zinc-800">
+          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">⏰ Next Halving</p>
+          <p className="text-2xl font-bold text-orange-400">
             {formatTimeUntil(state.nextHalvingTimestamp)}
           </p>
-          <p className="text-xs text-gray-600 mt-2">
+          <p className="text-[10px] text-gray-700 mt-1">
             {formatDate(state.nextHalvingTimestamp)}
           </p>
         </div>
@@ -199,27 +212,27 @@ function Lab({ address }) {
       </div>
 
       {/* Info Section */}
-      <div className="card bg-gradient-to-br from-zinc-900 via-black to-zinc-900 border-zinc-700">
-        <h3 className="text-xl font-bold mb-4 text-farm-cyan">📈 How it works</h3>
-        <ul className="space-y-3 text-gray-400 text-sm">
+      <div className="card border-zinc-800">
+        <h3 className="text-sm font-medium mb-3 text-farm-cyan uppercase tracking-wide">📈 How it works</h3>
+        <ul className="space-y-2 text-gray-500 text-xs">
           <li className="flex items-start gap-2">
-            <span className="text-farm-pink mt-1">▸</span>
+            <span className="text-farm-pink mt-0.5">▸</span>
             <span>Your lab generates COKE continuously based on your Grow Power</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-farm-pink mt-1">▸</span>
+            <span className="text-farm-pink mt-0.5">▸</span>
             <span>Rewards are calculated from the global emission rate</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-farm-pink mt-1">▸</span>
+            <span className="text-farm-pink mt-0.5">▸</span>
             <span>Your share is proportional to your power vs. total network power</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-farm-pink mt-1">▸</span>
+            <span className="text-farm-pink mt-0.5">▸</span>
             <span>Emissions halve periodically to maintain scarcity</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-farm-pink mt-1">▸</span>
+            <span className="text-farm-pink mt-0.5">▸</span>
             <span>Claim your rewards anytime - they accumulate automatically!</span>
           </li>
         </ul>
