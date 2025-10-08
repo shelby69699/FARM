@@ -110,7 +110,8 @@ function App() {
             <span className="text-gray-500">Powered by</span>
             <span className="text-farm-cyan font-semibold">Cardano</span>
             <span className="text-gray-500">•</span>
-            <span className="text-gray-500">Built with Lucid & React</span>
+            <span className="text-gray-500">Built by</span>
+            <span className="text-farm-pink font-semibold">Farm Labs</span>
           </p>
           <p className="text-gray-700">
             Network: <span className="text-farm-pink font-medium">{import.meta.env.VITE_NETWORK}</span>
