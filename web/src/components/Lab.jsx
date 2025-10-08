@@ -16,7 +16,7 @@ function Lab({ address, onBack, isAdmin, lucid }) {
     try {
       const response = await fetch(`${API_BASE}/api/state/${address}`);
       if (!response.ok) {
-        throw new Error('Failed to load lab state');
+        throw new Error('Failed to load farm state');
       }
       const data = await response.json();
       setState(data);
@@ -30,12 +30,13 @@ function Lab({ address, onBack, isAdmin, lucid }) {
 
   useEffect(() => {
     loadState();
-    // Refresh state every 10 seconds
-    const interval = setInterval(loadState, 10000);
+    const interval = setInterval(loadState, 5000);
     return () => clearInterval(interval);
   }, [address]);
 
   const handleClaim = async () => {
+    if (state.pending <= 0) return;
+    
     setClaiming(true);
     setError(null);
     setSuccess(null);
@@ -57,9 +58,7 @@ function Lab({ address, onBack, isAdmin, lucid }) {
       const result = await response.json();
       setSuccess(`Successfully claimed ${result.claimed.toFixed(2)} COKE!`);
       
-      // Reload state
       await loadState();
-
     } catch (err) {
       console.error('Claim error:', err);
       setError(err.message);
@@ -69,36 +68,40 @@ function Lab({ address, onBack, isAdmin, lucid }) {
   };
 
   const formatDate = (timestamp) => {
-    return new Date(timestamp * 1000).toLocaleString();
+    return new Date(timestamp * 1000).toLocaleDateString();
   };
 
   const formatTimeUntil = (timestamp) => {
-    const now = Math.floor(Date.now() / 1000);
-    const diff = timestamp - now;
-    
-    if (diff < 0) return 'Now';
+    const diff = timestamp - Math.floor(Date.now() / 1000);
+    if (diff <= 0) return 'Soon';
     
     const days = Math.floor(diff / 86400);
     const hours = Math.floor((diff % 86400) / 3600);
-    const minutes = Math.floor((diff % 3600) / 60);
     
     if (days > 0) return `${days}d ${hours}h`;
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
+    return `${hours}h`;
   };
 
   if (loading) {
     return (
-      <div className="card text-center py-12">
-        <p className="text-gray-400 animate-pulse">Loading lab...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-farm-pink mb-4"></div>
+          <p className="text-gray-400">Loading your farm...</p>
+        </div>
       </div>
     );
   }
 
   if (!state) {
     return (
-      <div className="card text-center py-12">
-        <p className="text-red-400">Failed to load lab data</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-400">Failed to load farm state</p>
+          <button onClick={onBack} className="mt-4 text-farm-cyan hover:text-farm-pink transition-colors">
+            ← Go Back
+          </button>
+        </div>
       </div>
     );
   }
@@ -106,7 +109,7 @@ function Lab({ address, onBack, isAdmin, lucid }) {
   const farmingPerDay = (state.currentEmissionRate * state.networkShare / 100 * 86400).toFixed(2);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-8">
       {/* Show Admin Dashboard if toggled */}
       {isAdmin && showAdmin ? (
         <div className="space-y-4">
@@ -123,382 +126,245 @@ function Lab({ address, onBack, isAdmin, lucid }) {
         </div>
       ) : (
         <>
-          {/* Grid Layout: Left Sidebar + Right 3D View */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
-            
-            {/* LEFT SIDEBAR - Statistics */}
-            <div className="lg:col-span-4 space-y-4">
-          
-          {/* Current Estimate Card */}
-          <div className="bg-gradient-to-br from-zinc-900 to-black rounded-2xl p-6 border border-zinc-800 shadow-xl relative overflow-hidden">
-            {/* Animated background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-farm-pink/5 to-farm-cyan/5 animate-pulse"></div>
-            
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pending Rewards</h3>
-                <div className="px-2 py-1 bg-green-500/20 border border-green-500/30 rounded text-[10px] text-green-400 font-medium">
-                  LIVE
-                </div>
-              </div>
-              
-              <div className="mb-6">
-                <div className="text-5xl font-bold bg-gradient-to-r from-farm-pink to-farm-cyan bg-clip-text text-transparent mb-2">
-                  {state.pending.toFixed(2)}
-                </div>
-                <div className="text-sm text-gray-500">COKE</div>
-              </div>
-              
-              <div className="space-y-3 mb-6 bg-black/40 rounded-xl p-4 border border-zinc-800">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">Network Share</span>
-                  <span className="text-sm font-bold text-farm-cyan">{state.networkShare.toFixed(6)}%</span>
-                </div>
-                <div className="h-px bg-zinc-800"></div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">Daily Farming</span>
-                  <span className="text-sm font-bold text-farm-pink">{farmingPerDay} COKE</span>
-                </div>
-              </div>
-
-              {error && (
-                <div className="bg-red-900/30 border border-red-500/50 rounded-lg p-3 mb-3">
-                  <p className="text-red-300 text-xs">❌ {error}</p>
-                </div>
+          {/* Top Bar */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              {onBack && (
+                <button 
+                  onClick={onBack}
+                  className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-all text-gray-400 hover:text-white"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                </button>
               )}
-
-              {success && (
-                <div className="bg-green-900/30 border border-green-500/50 rounded-lg p-3 mb-3 animate-pulse">
-                  <p className="text-green-300 text-xs">✅ {success}</p>
-                </div>
-              )}
-
-              <button
-                onClick={handleClaim}
-                disabled={claiming || state.pending <= 0}
-                className="w-full bg-gradient-to-r from-farm-pink to-farm-purple hover:from-farm-pink/90 hover:to-farm-purple/90 text-white font-bold py-4 px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-farm-pink/50 transform hover:scale-[1.02] active:scale-[0.98]"
-              >
-                {claiming ? '⏳ Claiming...' : state.pending <= 0 ? '💤 No Rewards Yet' : `🎁 Claim ${state.pending.toFixed(2)} COKE`}
-              </button>
-              
-              <p className="text-[10px] text-gray-600 mt-3 text-center">
-                Rewards update in real-time based on network activity
-              </p>
+              <div>
+                <h1 className="text-2xl font-bold text-white">Your Laboratory</h1>
+                <p className="text-sm text-gray-500">Level 1 Production Facility</p>
+              </div>
             </div>
+            {isAdmin && (
+              <button 
+                onClick={() => setShowAdmin(true)}
+                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-lg transition-all shadow-lg text-sm font-medium"
+              >
+                🔐 Admin Panel
+              </button>
+            )}
           </div>
 
-          {/* Your Farm Card */}
-          <div className="bg-gradient-to-br from-zinc-900 to-black rounded-2xl p-6 border border-zinc-800 shadow-xl">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan p-0.5 animate-pulse">
-                  <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
-                    <span className="text-xl">🧪</span>
+          {/* Main Dashboard Grid */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            
+            {/* LEFT COLUMN - Main Stats */}
+            <div className="xl:col-span-2 space-y-6">
+              
+              {/* Pending Rewards - Hero Card */}
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
+                <div className="relative bg-gradient-to-br from-zinc-900 to-black rounded-2xl p-8 border border-zinc-800/50">
+                  <div className="flex items-start justify-between mb-6">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Live Rewards</span>
+                      </div>
+                      <div className="text-6xl font-bold bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan bg-clip-text text-transparent mb-2">
+                        {state.pending.toFixed(2)}
+                      </div>
+                      <div className="text-lg text-gray-500 font-medium">COKE</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-gray-500 mb-1">Daily Rate</div>
+                      <div className="text-2xl font-bold text-farm-cyan">{farmingPerDay}</div>
+                      <div className="text-xs text-gray-600">COKE/day</div>
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-3 mb-4">
+                      <p className="text-red-300 text-sm">❌ {error}</p>
+                    </div>
+                  )}
+
+                  {success && (
+                    <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3 mb-4">
+                      <p className="text-green-300 text-sm">✅ {success}</p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleClaim}
+                    disabled={claiming || state.pending <= 0}
+                    className="w-full bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan hover:shadow-lg hover:shadow-farm-pink/50 text-white font-bold py-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100"
+                  >
+                    {claiming ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                        Claiming...
+                      </span>
+                    ) : state.pending <= 0 ? (
+                      '💤 No Rewards Yet'
+                    ) : (
+                      `🎁 Claim ${state.pending.toFixed(2)} COKE`
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Network Share */}
+                <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-6 border border-zinc-800/50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-farm-cyan/10 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-farm-cyan" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide">Network Share</div>
+                      <div className="text-2xl font-bold text-white">{state.networkShare.toFixed(4)}%</div>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">Your Farm</h3>
-                  <p className="text-[10px] text-gray-600">Level 1 Laboratory</p>
+
+                {/* Grow Power */}
+                <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-6 border border-zinc-800/50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-farm-pink/10 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-farm-pink" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide">Grow Power</div>
+                      <div className="text-2xl font-bold text-white">{state.basePower.toLocaleString()}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Total Harvested */}
+                <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-6 border border-zinc-800/50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide">Total Harvested</div>
+                      <div className="text-2xl font-bold text-white">{state.totalClaimed.toFixed(2)}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Emission Rate */}
+                <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-6 border border-zinc-800/50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide">Emission Rate</div>
+                      <div className="text-2xl font-bold text-white">{state.currentEmissionRate.toFixed(4)}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                {isAdmin && (
-                  <button 
-                    onClick={() => setShowAdmin(true)}
-                    className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white text-xs rounded-lg transition-all shadow-lg hover:shadow-purple-500/50"
-                  >
-                    🔐 Admin
-                  </button>
-                )}
-                {onBack && (
-                  <button 
-                    onClick={onBack}
-                    className="w-8 h-8 rounded-lg border border-zinc-700 flex items-center justify-center hover:bg-zinc-800 hover:border-zinc-600 transition-all"
-                  >
-                    <span className="text-gray-400 text-sm">←</span>
-                  </button>
-                )}
+
+              {/* Timeline */}
+              <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-6 border border-zinc-800/50">
+                <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Timeline</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between py-2 border-b border-zinc-800">
+                    <span className="text-sm text-gray-400">Lab Activated</span>
+                    <span className="text-sm font-medium text-white">{formatDate(state.activatedAt)}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-gray-400">Next Halving</span>
+                    <span className="text-sm font-medium text-orange-400">{formatTimeUntil(state.nextHalvingTimestamp)}</span>
+                  </div>
+                </div>
               </div>
+
             </div>
 
-            <div className="space-y-3 bg-black/40 rounded-xl p-4 border border-zinc-800">
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">Total Grow Power</span>
-                <span className="text-sm font-bold text-farm-cyan">{state.basePower.toLocaleString()}</span>
-              </div>
+            {/* RIGHT COLUMN - Visual + Booster */}
+            <div className="space-y-6">
               
-              <div className="h-px bg-zinc-800"></div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">Total Harvested</span>
-                <span className="text-sm font-bold text-green-400">{state.totalClaimed.toFixed(2)} COKE</span>
-              </div>
-
-              <div className="h-px bg-zinc-800"></div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">Next Halving</span>
-                <span className="text-sm font-bold text-orange-400">{formatTimeUntil(state.nextHalvingTimestamp)}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* System Stats */}
-          <div className="bg-gradient-to-br from-zinc-900 to-black rounded-2xl p-6 border border-zinc-800 shadow-xl">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></span>
-              Network Stats
-            </h3>
-            <div className="space-y-3 bg-black/40 rounded-xl p-4 border border-zinc-800">
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">Global Emission</span>
-                <span className="text-sm font-medium text-yellow-400">{state.currentEmissionRate.toFixed(4)} COKE/s</span>
-              </div>
-              <div className="h-px bg-zinc-800"></div>
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">Lab Started</span>
-                <span className="text-xs font-medium text-gray-400">{new Date(state.activatedAt * 1000).toLocaleDateString()}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Booster Pack */}
-          {lucid && (
-            <BoosterPack 
-              lucid={lucid} 
-              address={address}
-              onPurchased={() => {
-                // Reload state after purchase
-                loadState();
-              }}
-            />
-          )}
-
-        </div>
-
-        {/* RIGHT SIDE - Farm Visualization */}
-        <div className="lg:col-span-8">
-          <div className="bg-black rounded-2xl border border-zinc-800 h-[calc(100vh-8rem)] overflow-hidden relative">
-            {/* Professional Beaker Laboratory */}
-            <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-              
-              {/* Background Ambient Glow */}
-              <div className="absolute inset-0 bg-gradient-radial from-farm-pink/10 via-transparent to-transparent"
-                   style={{ animation: 'production-pulse 4s ease-in-out infinite' }}></div>
-              
-              <div className="relative">
-                {/* CSS Beaker */}
-                <div className="relative w-64 h-80">
-                  
-                  {/* Energy Rings - Expanding from Reaction */}
+              {/* Farm Visualization */}
+              <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl border border-zinc-800/50 p-8 aspect-square flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-radial from-farm-purple/5 via-transparent to-transparent"></div>
+                
+                {/* Animated Circles */}
+                <div className="absolute inset-0 flex items-center justify-center">
                   {[...Array(3)].map((_, i) => (
                     <div
-                      key={`ring-${i}`}
-                      className="absolute left-1/2 bottom-16 transform -translate-x-1/2 w-32 h-4 border-2 rounded-full"
+                      key={i}
+                      className="absolute rounded-full border-2"
                       style={{
-                        borderColor: i % 2 === 0 ? 'rgba(255, 0, 255, 0.3)' : 'rgba(0, 255, 255, 0.3)',
-                        animation: `energy-ring ${2 + i * 0.3}s ease-out infinite`,
-                        animationDelay: `${i * 0.7}s`
+                        width: `${(i + 1) * 100}px`,
+                        height: `${(i + 1) * 100}px`,
+                        borderColor: i % 2 === 0 ? 'rgba(255, 0, 255, 0.1)' : 'rgba(0, 255, 255, 0.1)',
+                        animation: `spin ${30 - i * 5}s linear infinite ${i % 2 === 0 ? '' : 'reverse'}`
                       }}
-                    />
+                    >
+                      <div className="absolute top-0 left-1/2 w-2 h-2 bg-farm-pink rounded-full -translate-x-1/2"></div>
+                    </div>
                   ))}
-                  
-                  {/* Realistic Steam/Vapor Rising from Top */}
-                  {[...Array(6)].map((_, i) => (
-                    <div
-                      key={`steam-${i}`}
-                      className="absolute w-10 h-10 rounded-full blur-lg"
-                      style={{
-                        left: `${25 + i * 12}%`,
-                        top: '-30px',
-                        background: `linear-gradient(to top, ${i % 2 === 0 ? 'rgba(255, 0, 255, 0.3)' : 'rgba(0, 255, 255, 0.3)'}, transparent)`,
-                        animation: `steam-rise ${2.5 + i * 0.4}s ease-out infinite`,
-                        animationDelay: `${i * 0.5}s`,
-                        '--steam-drift': `${(i % 2 === 0 ? 1 : -1) * (10 + i * 5)}px`
-                      }}
-                    />
-                  ))}
-                  
-                  {/* Beaker Container */}
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-48 h-64">
-                    
-                    {/* Heat Distortion Layer */}
-                    <div className="absolute inset-0 rounded-b-3xl overflow-hidden pointer-events-none"
-                         style={{ animation: 'heat-wave 3s ease-in-out infinite' }}>
-                      <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 to-transparent"></div>
+                </div>
+
+                {/* Center Icon */}
+                <div className="relative z-10">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-farm-pink via-farm-purple to-farm-cyan p-1 animate-pulse">
+                    <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
+                      <div className="text-6xl">🧪</div>
                     </div>
-                    
-                    {/* Glass Beaker with Enhanced Glow */}
-                    <div className="relative w-full h-full border-4 border-gray-300/50 rounded-b-3xl bg-gradient-to-b from-white/5 to-zinc-900/30 backdrop-blur-sm"
-                         style={{ 
-                           clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',
-                           animation: 'glow-pulse 3s ease-in-out infinite',
-                           boxShadow: '0 0 60px rgba(255, 0, 255, 0.4), inset 0 0 30px rgba(255, 255, 255, 0.1)'
-                         }}>
-                      
-                      {/* Reaction Glow at Bottom */}
-                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-36 h-24 rounded-full blur-2xl"
-                           style={{
-                             background: 'radial-gradient(circle, rgba(255, 0, 255, 0.8), rgba(0, 255, 255, 0.6), transparent)',
-                             animation: 'reaction-glow 2s ease-in-out infinite'
-                           }}></div>
-                      
-                      {/* Liquid Inside - Multi-layer Animated */}
-                      <div className="absolute bottom-0 left-0 right-0 rounded-b-3xl transition-all duration-1000 overflow-hidden"
-                           style={{ 
-                             height: `${Math.min((state.pending / 100) * 60 + 25, 85)}%`,
-                             animation: 'liquid-bubble 2.5s ease-in-out infinite'
-                           }}>
-                        
-                        {/* Liquid Base Layer */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-farm-pink via-farm-purple to-farm-cyan/50"
-                             style={{ 
-                               opacity: 0.8,
-                               boxShadow: '0 0 60px rgba(255, 0, 255, 0.8), inset 0 0 40px rgba(0, 255, 255, 0.4)'
-                             }}></div>
-                        
-                        {/* Swirling Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-farm-cyan/30 to-transparent"
-                             style={{ animation: 'shimmer 4s linear infinite' }}></div>
-                        
-                        {/* Professional Bubbles - Multiple Sizes */}
-                        {[...Array(20)].map((_, i) => (
-                          <div
-                            key={`bubble-${i}`}
-                            className="absolute rounded-full"
-                            style={{
-                              width: `${3 + (i % 5) * 2}px`,
-                              height: `${3 + (i % 5) * 2}px`,
-                              left: `${5 + (i * 4.5) % 90}%`,
-                              bottom: '0',
-                              background: i % 3 === 0 ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 255, 255, 0.6)',
-                              boxShadow: '0 0 10px rgba(255, 255, 255, 0.8)',
-                              animation: `bubble-rise ${2.5 + (i % 5)}s ease-in infinite`,
-                              animationDelay: `${i * 0.25}s`,
-                              filter: 'blur(0.5px)'
-                            }}
-                          />
-                        ))}
-
-                        {/* COKE Production Particles - Enhanced */}
-                        {[...Array(12)].map((_, i) => (
-                          <div
-                            key={`particle-${i}`}
-                            className="absolute text-[11px] font-black drop-shadow-lg"
-                            style={{
-                              left: `${10 + (i * 7.5) % 80}%`,
-                              bottom: '5%',
-                              animation: `particle-float ${3.5 + (i % 4)}s ease-out infinite`,
-                              animationDelay: `${i * 0.5}s`,
-                              '--float-x': `${(i % 2 === 0 ? 1 : -1) * (15 + i * 4)}px`,
-                              color: i % 3 === 0 ? '#ff00ff' : i % 3 === 1 ? '#00ffff' : '#ffffff',
-                              textShadow: `0 0 10px ${i % 2 === 0 ? '#ff00ff' : '#00ffff'}`
-                            }}
-                          >
-                            +{state.currentEmissionRate.toFixed(1)}
-                          </div>
-                        ))}
-
-                        {/* Sparkles in Liquid */}
-                        {[...Array(8)].map((_, i) => (
-                          <div
-                            key={`sparkle-${i}`}
-                            className="absolute w-1 h-1 bg-white rounded-full"
-                            style={{
-                              left: `${20 + (i * 10) % 60}%`,
-                              top: `${20 + (i * 15) % 60}%`,
-                              animation: `sparkle ${1.5 + (i % 3) * 0.5}s ease-in-out infinite`,
-                              animationDelay: `${i * 0.3}s`,
-                              boxShadow: '0 0 6px rgba(255, 255, 255, 0.9)'
-                            }}
-                          />
-                        ))}
-                      </div>
-
-                      {/* Professional Measurement Lines with Labels */}
-                      {[
-                        { height: 20, label: '250ml' },
-                        { height: 40, label: '500ml' },
-                        { height: 60, label: '750ml' },
-                        { height: 80, label: '1L' }
-                      ].map((mark, i) => (
-                        <div key={i} 
-                             className="absolute left-0 right-0 border-t border-cyan-400/40"
-                             style={{ bottom: `${mark.height}%` }}>
-                          <div className="absolute -left-14 -top-2 text-[9px] text-cyan-400/60 font-mono">
-                            {mark.label}
-                          </div>
-                          <div className="absolute left-0 w-3 h-px bg-cyan-400/60"></div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Beaker Top with Enhanced Rim */}
-                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-40 h-5 border-t-4 border-x-4 border-gray-300/60 rounded-t-xl bg-gradient-to-b from-gray-400/20 to-transparent"
-                         style={{ boxShadow: '0 -8px 30px rgba(255, 0, 255, 0.4), inset 0 2px 10px rgba(255, 255, 255, 0.2)' }}></div>
-                    
-                    {/* Reflection/Shine on Glass */}
-                    <div className="absolute top-10 left-8 w-16 h-32 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-sm transform -rotate-12 pointer-events-none"></div>
                   </div>
-
-                  {/* Cardano Logo Above - Enhanced */}
-                  <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 w-24 h-24 opacity-30"
-                       style={{ animation: 'production-pulse 3s ease-in-out infinite' }}>
-                    <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Logo" className="w-full h-full drop-shadow-2xl" />
-                  </div>
-
-                  {/* Professional Status Display */}
-                  <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center">
-                    <div className="bg-gradient-to-r from-green-500/20 via-green-400/30 to-green-500/20 px-6 py-2 rounded-full border border-green-400/40 backdrop-blur-sm"
-                         style={{ animation: 'production-pulse 2s ease-in-out infinite' }}>
-                      <div className="flex items-center gap-3">
-                        <div className="flex gap-1">
-                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></div>
-                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping" style={{ animationDelay: '0.2s' }}></div>
-                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping" style={{ animationDelay: '0.4s' }}></div>
-                        </div>
-                        <span className="text-green-300 text-xs font-bold tracking-wider">ACTIVE PRODUCTION</span>
-                        <div className="text-[10px] text-green-400/80 font-mono">
-                          {(state.currentEmissionRate * 60).toFixed(1)} COKE/min
-                        </div>
-                      </div>
-                    </div>
+                  <div className="text-center mt-4">
+                    <div className="text-sm text-gray-400">Status</div>
+                    <div className="text-lg font-bold text-green-400">ACTIVE</div>
                   </div>
                 </div>
+
+                {/* Floating Particles */}
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={`float-${i}`}
+                    className="absolute w-1 h-1 bg-farm-cyan rounded-full"
+                    style={{
+                      left: `${20 + (i * 15) % 60}%`,
+                      top: `${30 + (i * 20) % 40}%`,
+                      animation: `float ${3 + i}s ease-in-out infinite`,
+                      animationDelay: `${i * 0.5}s`,
+                      opacity: 0.6
+                    }}
+                  />
+                ))}
               </div>
-            </div>
-              
-            {/* Floating Stats Overlay */}
-            <div className="absolute top-6 right-6 bg-black/80 backdrop-blur-md rounded-xl px-4 py-3 border border-farm-pink/30 shadow-lg">
-              <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Power Level</div>
-              <div className="text-2xl font-bold text-farm-pink">{state.basePower}</div>
-            </div>
-            
-            <div className="absolute bottom-6 left-6 bg-black/80 backdrop-blur-md rounded-xl px-4 py-3 border border-farm-cyan/30 shadow-lg">
-              <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Pending Rewards</div>
-              <div className="text-2xl font-bold text-farm-cyan">{state.pending.toFixed(2)} <span className="text-sm text-gray-500">COKE</span></div>
+
+              {/* Booster Pack */}
+              {lucid && (
+                <BoosterPack 
+                  lucid={lucid} 
+                  address={address}
+                  onPurchased={() => {
+                    loadState();
+                  }}
+                />
+              )}
+
             </div>
 
-            {/* Status Indicator */}
-            <div className="absolute top-6 left-6 flex items-center gap-2 bg-black/80 backdrop-blur-md rounded-xl px-4 py-2 border border-green-500/30">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-xs text-green-400 font-medium">ACTIVE</span>
-            </div>
-
-            {/* Lab Info */}
-            <div className="absolute bottom-6 right-6 text-right">
-              <div className="text-xs text-gray-600">Farm Level</div>
-              <div className="text-lg font-bold text-white">Level 1</div>
-            </div>
           </div>
-        </div>
-
-      </div>
-      </>
+        </>
       )}
     </div>
   );
 }
 
 export default Lab;
-
