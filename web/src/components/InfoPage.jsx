@@ -34,7 +34,7 @@ function InfoPage({ onClose }) {
               <span className="text-farm-pink font-bold">$HOOKED</span> is a new on-chain simulation game where players build their own COKE farm, grow and optimize production, fully on Cardano blockchain.
             </p>
             <p className="text-gray-300 leading-relaxed text-lg mt-4">
-              Unlike memecoin games where you just buy the token, in <span className="text-farm-pink font-bold">$HOOKED</span> you <span className="text-farm-cyan font-semibold">earn the in-game currency $COKE by actually running your farm</span>. $COKE powers the entire economy—used to buy booster packs, unlock upgrades, and fuel the flywheel—while every in-game purchase is burned, keeping the system self-sustaining.
+              Unlike memecoin games where you just buy the token, in Farm Labs you <span className="text-farm-cyan font-semibold">earn the in-game currency $COKE by actually running your farm</span>. $COKE powers the entire economy—used to buy booster packs, unlock upgrades, and fuel the flywheel—while every in-game purchase is burned, keeping the system self-sustaining.
             </p>
           </div>
         </section>
@@ -113,7 +113,7 @@ function InfoPage({ onClose }) {
               <h2 className="text-3xl font-bold text-white">Farming $COKE</h2>
             </div>
             <p className="text-gray-300 leading-relaxed text-lg">
-              <span className="text-farm-pink font-bold">$HOOKED</span> takes the legendary mechanics of Bitcoin mining and reimagines them as an on-chain COKE-farming system, built natively on Cardano.
+              Farm Labs takes the legendary mechanics of Bitcoin mining and reimagines them as an on-chain COKE-farming system, built natively on Cardano.
             </p>
             <p className="text-gray-300 leading-relaxed text-lg mt-4">
               Players can grow virtual COKE farms, and each upgrade and booster contributes to their <span className="text-farm-pink font-semibold">Grow Power</span> — the on-chain equivalent of Bitcoin's hashpower.
@@ -143,7 +143,7 @@ function InfoPage({ onClose }) {
             <div className="mt-6 bg-black/60 rounded-xl p-6 border border-orange-500/30">
               <h3 className="text-xl font-bold text-orange-400 mb-4">📉 Halving Schedule</h3>
               <p className="text-gray-300 mb-4">
-                <span className="text-farm-pink font-bold">$HOOKED</span> follows a halving mechanism inspired by Bitcoin. The reward per second starts at <span className="text-orange-400 font-bold">0.5 $COKE</span> and halves every <span className="text-orange-400 font-bold">7 days</span> (604,800 seconds).
+                Farm Labs follows a halving mechanism inspired by Bitcoin. The reward per second starts at <span className="text-orange-400 font-bold">0.5 $COKE</span> and halves every <span className="text-orange-400 font-bold">7 days</span> (604,800 seconds).
               </p>
               <div className="bg-orange-900/20 border border-orange-500/30 rounded-lg p-4">
                 <p className="text-orange-200 text-sm font-medium">⚠️ This ensures long-term sustainability and rewards early adopters.</p>
@@ -247,7 +247,7 @@ function InfoPage({ onClose }) {
               <h2 className="text-3xl font-bold text-white">Mystery Booster Pack</h2>
             </div>
             <p className="text-gray-300 leading-relaxed text-lg mb-6">
-              Mystery Booster Packs are the heartbeat of the hustle in <span className="text-farm-pink font-bold">$HOOKED</span>. Each pack costs <span className="text-farm-pink font-bold">300 $COKE</span> and comes loaded with 1 random power upgrade, ranging anywhere from Common → Legendary.
+              Mystery Booster Packs are the heartbeat of the hustle in Farm Labs. Each pack costs <span className="text-farm-pink font-bold">300 $COKE</span> and comes loaded with 1 random power upgrade, ranging anywhere from Common → Legendary.
             </p>
 
             {/* Pack Tiers */}
