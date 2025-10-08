@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import AdminDashboard from './AdminDashboard';
 
-function Lab({ address, onBack }) {
+function Lab({ address, onBack, isAdmin }) {
   const [state, setState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [claiming, setClaiming] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [showAdmin, setShowAdmin] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -104,11 +106,27 @@ function Lab({ address, onBack }) {
 
   return (
     <div className="min-h-screen">
-      {/* Grid Layout: Left Sidebar + Right 3D View */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
-        
-        {/* LEFT SIDEBAR - Statistics */}
-        <div className="lg:col-span-4 space-y-4">
+      {/* Show Admin Dashboard if toggled */}
+      {isAdmin && showAdmin ? (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold text-white">Admin Dashboard</h2>
+            <button
+              onClick={() => setShowAdmin(false)}
+              className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors"
+            >
+              ← Back to Farm
+            </button>
+          </div>
+          <AdminDashboard address={address} />
+        </div>
+      ) : (
+        <>
+          {/* Grid Layout: Left Sidebar + Right 3D View */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+            
+            {/* LEFT SIDEBAR - Statistics */}
+            <div className="lg:col-span-4 space-y-4">
           
           {/* Current Estimate Card */}
           <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
@@ -165,14 +183,24 @@ function Lab({ address, onBack }) {
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-farm-pink to-farm-purple"></div>
                 <h3 className="text-lg font-bold text-white">Your Farm</h3>
               </div>
-              {onBack && (
-                <button 
-                  onClick={onBack}
-                  className="w-8 h-8 rounded-lg border border-zinc-700 flex items-center justify-center hover:bg-zinc-800 transition-colors"
-                >
-                  <span className="text-gray-400 text-sm">←</span>
-                </button>
-              )}
+              <div className="flex items-center gap-2">
+                {isAdmin && (
+                  <button 
+                    onClick={() => setShowAdmin(true)}
+                    className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-lg transition-colors"
+                  >
+                    🔐 Admin
+                  </button>
+                )}
+                {onBack && (
+                  <button 
+                    onClick={onBack}
+                    className="w-8 h-8 rounded-lg border border-zinc-700 flex items-center justify-center hover:bg-zinc-800 transition-colors"
+                  >
+                    <span className="text-gray-400 text-sm">←</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -264,9 +292,11 @@ function Lab({ address, onBack }) {
               </div>
             </div>
           </div>
-        </div>
+          </div>
 
-      </div>
+        </div>
+        </>
+      )}
     </div>
   );
 }
