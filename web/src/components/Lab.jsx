@@ -296,55 +296,99 @@ function Lab({ address, onBack, isAdmin, lucid }) {
             {/* RIGHT COLUMN - Visual + Booster */}
             <div className="space-y-6">
               
-              {/* Farm Visualization */}
-              <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl border border-zinc-800/50 p-8 aspect-square flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-radial from-farm-purple/5 via-transparent to-transparent"></div>
-                
-                {/* Animated Circles */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {[...Array(3)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute rounded-full border-2"
-                      style={{
-                        width: `${(i + 1) * 100}px`,
-                        height: `${(i + 1) * 100}px`,
-                        borderColor: i % 2 === 0 ? 'rgba(255, 0, 255, 0.1)' : 'rgba(0, 255, 255, 0.1)',
-                        animation: `spin ${30 - i * 5}s linear infinite ${i % 2 === 0 ? '' : 'reverse'}`
-                      }}
-                    >
-                      <div className="absolute top-0 left-1/2 w-2 h-2 bg-farm-pink rounded-full -translate-x-1/2"></div>
-                    </div>
-                  ))}
+              {/* COKE Production Monitor */}
+              <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl border border-red-900/30 p-6 aspect-square flex flex-col justify-between relative overflow-hidden">
+                {/* Danger stripes background */}
+                <div className="absolute inset-0 opacity-5">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,0,0,0.3) 35px, rgba(255,0,0,0.3) 70px)'
+                  }}></div>
                 </div>
 
-                {/* Center Icon */}
+                {/* Header */}
                 <div className="relative z-10">
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-farm-pink via-farm-purple to-farm-cyan p-1 animate-pulse">
-                    <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
-                      <div className="text-6xl">🧪</div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs font-bold text-red-400 uppercase tracking-wider">Production Status</span>
+                    </div>
+                    <div className="px-2 py-1 bg-green-500/20 border border-green-500/30 rounded text-[10px] text-green-400 font-bold">
+                      COOKING
                     </div>
                   </div>
-                  <div className="text-center mt-4">
-                    <div className="text-sm text-gray-400">Status</div>
-                    <div className="text-lg font-bold text-green-400">ACTIVE</div>
+                  
+                  {/* Production Rate */}
+                  <div className="bg-black/60 rounded-lg p-4 border border-zinc-800 mb-4">
+                    <div className="text-[10px] text-gray-600 uppercase mb-1">Current Output</div>
+                    <div className="text-3xl font-bold text-farm-pink">
+                      {(state.currentEmissionRate * state.networkShare / 100 * 3600).toFixed(1)}
+                    </div>
+                    <div className="text-xs text-gray-500">COKE per hour</div>
                   </div>
                 </div>
 
-                {/* Floating Particles */}
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={`float-${i}`}
-                    className="absolute w-1 h-1 bg-farm-cyan rounded-full"
-                    style={{
-                      left: `${20 + (i * 15) % 60}%`,
-                      top: `${30 + (i * 20) % 40}%`,
-                      animation: `float ${3 + i}s ease-in-out infinite`,
-                      animationDelay: `${i * 0.5}s`,
-                      opacity: 0.6
-                    }}
-                  />
-                ))}
+                {/* Production Bars */}
+                <div className="relative z-10 space-y-4">
+                  {/* Power Level */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] text-gray-500 uppercase font-semibold">Power Level</span>
+                      <span className="text-xs text-farm-pink font-bold">{state.basePower}</span>
+                    </div>
+                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-farm-pink to-farm-purple"
+                        style={{ 
+                          width: `${Math.min((state.basePower / 500) * 100, 100)}%`,
+                          boxShadow: '0 0 10px rgba(255, 0, 255, 0.5)'
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* Production Efficiency */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] text-gray-500 uppercase font-semibold">Network Share</span>
+                      <span className="text-xs text-farm-cyan font-bold">{state.networkShare.toFixed(4)}%</span>
+                    </div>
+                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-farm-cyan to-farm-purple"
+                        style={{ 
+                          width: `${Math.min(state.networkShare * 100, 100)}%`,
+                          boxShadow: '0 0 10px rgba(0, 255, 255, 0.5)'
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* Batch Progress */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] text-gray-500 uppercase font-semibold">Batch Progress</span>
+                      <span className="text-xs text-yellow-400 font-bold">{state.pending.toFixed(0)} COKE</span>
+                    </div>
+                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-yellow-500 to-orange-500 animate-pulse"
+                        style={{ 
+                          width: `${Math.min((state.pending / 100) * 100, 100)}%`,
+                          boxShadow: '0 0 10px rgba(234, 179, 8, 0.5)'
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Warning Label */}
+                <div className="relative z-10 mt-4">
+                  <div className="bg-yellow-900/20 border border-yellow-500/30 rounded px-3 py-2 text-center">
+                    <div className="text-[10px] text-yellow-400 font-bold uppercase tracking-wide">
+                      ⚠ Unauthorized Production Facility
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Booster Pack */}
