@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Box, Cylinder, Sphere, Environment } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import AdminDashboard from './AdminDashboard';
 import BoosterPack from './BoosterPack';
@@ -24,7 +24,8 @@ function ProductionTank({ pending, maxCapacity = 100 }) {
   return (
     <group position={[0, 0, 0]}>
       {/* Main Tank Body */}
-      <Cylinder ref={meshRef} args={[1.2, 1.2, 3, 32]} position={[0, 0, 0]}>
+      <mesh ref={meshRef} position={[0, 0, 0]}>
+        <cylinderGeometry args={[1.2, 1.2, 3, 32]} />
         <meshPhysicalMaterial
           color="#1a1a2e"
           metalness={0.9}
@@ -34,11 +35,12 @@ function ProductionTank({ pending, maxCapacity = 100 }) {
           transmission={0.9}
           thickness={0.5}
         />
-      </Cylinder>
+      </mesh>
 
       {/* Liquid Inside */}
       {fillLevel > 0 && (
-        <Cylinder ref={liquidRef} args={[1.1, 1.1, 2.5 * fillLevel, 32]} position={[0, -1.5, 0]}>
+        <mesh ref={liquidRef} position={[0, -1.5, 0]}>
+          <cylinderGeometry args={[1.1, 1.1, 2.5 * fillLevel, 32]} />
           <meshPhysicalMaterial
             color="#ff0080"
             emissive="#ff0080"
@@ -48,23 +50,26 @@ function ProductionTank({ pending, maxCapacity = 100 }) {
             transparent
             opacity={0.7}
           />
-        </Cylinder>
+        </mesh>
       )}
 
       {/* Top Cap */}
-      <Cylinder args={[1.3, 1.3, 0.2, 32]} position={[0, 1.6, 0]}>
+      <mesh position={[0, 1.6, 0]}>
+        <cylinderGeometry args={[1.3, 1.3, 0.2, 32]} />
         <meshStandardMaterial color="#333" metalness={0.8} roughness={0.2} />
-      </Cylinder>
+      </mesh>
 
       {/* Bottom Cap */}
-      <Cylinder args={[1.3, 1.3, 0.2, 32]} position={[0, -1.6, 0]}>
+      <mesh position={[0, -1.6, 0]}>
+        <cylinderGeometry args={[1.3, 1.3, 0.2, 32]} />
         <meshStandardMaterial color="#333" metalness={0.8} roughness={0.2} />
-      </Cylinder>
+      </mesh>
 
       {/* Pipes */}
-      <Cylinder args={[0.1, 0.1, 2, 16]} position={[1.4, 0.5, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <mesh position={[1.4, 0.5, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.1, 0.1, 2, 16]} />
         <meshStandardMaterial color="#444" metalness={0.9} roughness={0.3} />
-      </Cylinder>
+      </mesh>
       
       {/* Warning Label - Removed text to avoid font loading issues */}
       {/* Fill Level shown in HUD instead */}
@@ -95,7 +100,8 @@ function PowerGenerator({ basePower }) {
   return (
     <group position={[-3, 0.5, 0]}>
       {/* Core Sphere */}
-      <Sphere ref={coreRef} args={[0.4, 32, 32]}>
+      <mesh ref={coreRef}>
+        <sphereGeometry args={[0.4, 32, 32]} />
         <meshPhysicalMaterial
           color="#00ffff"
           emissive="#00ffff"
@@ -103,7 +109,7 @@ function PowerGenerator({ basePower }) {
           metalness={0.9}
           roughness={0.1}
         />
-      </Sphere>
+      </mesh>
 
       {/* Rotating Rings */}
       {[0, 1, 2].map((i) => (
@@ -124,9 +130,10 @@ function PowerGenerator({ basePower }) {
       {/* Power display shown in HUD */}
 
       {/* Base Platform */}
-      <Cylinder args={[0.8, 0.8, 0.2, 32]} position={[0, -1, 0]}>
+      <mesh position={[0, -1, 0]}>
+        <cylinderGeometry args={[0.8, 0.8, 0.2, 32]} />
         <meshStandardMaterial color="#222" metalness={0.8} roughness={0.3} />
-      </Cylinder>
+      </mesh>
     </group>
   );
 }
@@ -149,12 +156,12 @@ function NetworkVisualizer({ networkShare }) {
   return (
     <group position={[3, -0.5, 0]}>
       {Array.from({ length: barCount }).map((_, i) => (
-        <Box
+        <mesh
           key={i}
           ref={(el) => (barsRef.current[i] = el)}
-          args={[0.1, 1, 0.1]}
           position={[(i - barCount / 2) * 0.15, 0.5, 0]}
         >
+          <boxGeometry args={[0.1, 1, 0.1]} />
           <meshPhysicalMaterial
             color="#ff00ff"
             emissive="#ff00ff"
@@ -162,7 +169,7 @@ function NetworkVisualizer({ networkShare }) {
             metalness={0.8}
             roughness={0.2}
           />
-        </Box>
+        </mesh>
       ))}
       {/* Network display shown in HUD */}
     </group>
@@ -244,8 +251,7 @@ function Lab3DScene({ state }) {
         color="#ffffff"
       />
 
-      {/* Environment */}
-      <Environment preset="night" />
+      {/* Environment removed - causing font loading issues */}
 
       {/* Lab Floor */}
       <LabFloor />
