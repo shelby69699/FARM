@@ -9,6 +9,29 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ['lucid-cardano']
+  },
+  build: {
+    rollupOptions: {
+      external: [],
+      output: {
+        manualChunks: undefined
+      }
+    },
+    commonjsOptions: {
+      transformMixedEsModules: true
+    }
+  },
+  resolve: {
+    alias: {
+      'node-fetch': 'isomorphic-fetch',
+      util: 'util',
+      stream: 'stream-browserify',
+      buffer: 'buffer'
+    }
+  },
+  define: {
+    global: 'globalThis',
+    'process.env': {}
   }
 });
 
