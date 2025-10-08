@@ -50,7 +50,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-black via-zinc-900 to-black">
+    <div className="min-h-screen flex flex-col bg-black">
       <div className="flex-grow py-8 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
