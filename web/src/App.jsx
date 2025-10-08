@@ -50,13 +50,13 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-black">
-      <div className="flex-grow py-8 px-4">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-zinc-950 via-zinc-900 to-black">
+      <div className="flex-grow py-12 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <header className="text-center mb-12">
-            <div className="flex items-center justify-center mb-6">
-              <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-32 h-32" />
+          <header className="text-center mb-24">
+            <div className="flex items-center justify-center mb-8">
+              <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-48 h-48" />
             </div>
             <h1 className="text-8xl font-bold mb-4 bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan bg-clip-text text-transparent font-display tracking-tight">
               FARM LABS
