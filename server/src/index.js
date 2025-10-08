@@ -4,6 +4,7 @@ import { config, validateConfig } from './config.js';
 import { statements } from './db.js';
 import { verifyCokePayment, getTransactionStatus } from './blockfrost.js';
 import { accruePending, getFarmState, initializeFarm } from './game.js';
+import { isAdmin, getAdminStats, getAllUsers, getAllPayments } from './admin.js';
 
 // Validate configuration before starting
 validateConfig();
@@ -253,6 +254,75 @@ app.get('/api/stats', (req, res) => {
     
   } catch (error) {
     console.error('Stats error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message 
+    });
+  }
+});
+
+/**
+ * GET /api/admin/stats
+ * Get admin dashboard stats (treasury wallet only)
+ */
+app.get('/api/admin/stats', (req, res) => {
+  const { address } = req.query;
+  
+  if (!address || !isAdmin(address)) {
+    return res.status(403).json({ error: 'Unauthorized: Admin access only' });
+  }
+  
+  try {
+    const stats = getAdminStats();
+    res.json(stats);
+  } catch (error) {
+    console.error('Admin stats error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message 
+    });
+  }
+});
+
+/**
+ * GET /api/admin/users
+ * Get all users with stats (treasury wallet only)
+ */
+app.get('/api/admin/users', (req, res) => {
+  const { address } = req.query;
+  
+  if (!address || !isAdmin(address)) {
+    return res.status(403).json({ error: 'Unauthorized: Admin access only' });
+  }
+  
+  try {
+    const users = getAllUsers();
+    res.json(users);
+  } catch (error) {
+    console.error('Admin users error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message 
+    });
+  }
+});
+
+/**
+ * GET /api/admin/payments
+ * Get all payments (treasury wallet only)
+ */
+app.get('/api/admin/payments', (req, res) => {
+  const { address } = req.query;
+  
+  if (!address || !isAdmin(address)) {
+    return res.status(403).json({ error: 'Unauthorized: Admin access only' });
+  }
+  
+  try {
+    const payments = getAllPayments();
+    res.json(payments);
+  } catch (error) {
+    console.error('Admin payments error:', error);
     res.status(500).json({ 
       error: 'Internal server error',
       details: error.message 

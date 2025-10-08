@@ -3,6 +3,7 @@ import WalletConnect from './components/WalletConnect';
 import BalanceCard from './components/BalanceCard';
 import StartLab from './components/StartLab';
 import Lab from './components/Lab';
+import AdminDashboard from './components/AdminDashboard';
 
 // Polyfill for browser
 import { Buffer } from 'buffer';
@@ -13,8 +14,10 @@ function App() {
   const [address, setAddress] = useState(null);
   const [hasLab, setHasLab] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
+  const TREASURY_ADDRESS = import.meta.env.VITE_TREASURY_ADDRESS;
 
   // Check if user has an active lab
   const checkLabStatus = async (userAddress) => {
@@ -36,6 +39,7 @@ function App() {
     if (lucid) {
       lucid.wallet.address().then(addr => {
         setAddress(addr);
+        setIsAdmin(addr === TREASURY_ADDRESS);
         checkLabStatus(addr);
       });
     }
@@ -76,6 +80,13 @@ function App() {
         {/* Connected State */}
         {lucid && address && (
           <>
+            {/* Admin Panel (Treasury Wallet Only) */}
+            {isAdmin && (
+              <div className="mb-8">
+                <AdminDashboard address={address} />
+              </div>
+            )}
+
             {/* Balance Card */}
             <div className="mb-8">
               <BalanceCard lucid={lucid} address={address} />

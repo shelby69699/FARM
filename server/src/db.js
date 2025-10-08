@@ -140,6 +140,10 @@ export const statements = {
   
   getTotalPower: {
     get: () => getOne('SELECT SUM(base_power) as total FROM farms')
+  },
+  
+  getAllPayments: {
+    all: () => getAll('SELECT * FROM payments ORDER BY created_at DESC')
   }
 };
 
