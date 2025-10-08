@@ -100,142 +100,172 @@ function Lab({ address, onBack }) {
     );
   }
 
+  const farmingPerDay = (state.currentEmissionRate * state.networkShare / 100 * 86400).toFixed(2);
+
   return (
-    <div className="space-y-6">
-      {/* Lab Header with Back Button */}
-      <div className="card border-farm-cyan/20">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-farm-cyan to-farm-pink bg-clip-text text-transparent">
-            Your Lab Dashboard
-          </h2>
-          {onBack && (
-            <button 
-              onClick={onBack}
-              className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
+    <div className="min-h-screen">
+      {/* Grid Layout: Left Sidebar + Right 3D View */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+        
+        {/* LEFT SIDEBAR - Statistics */}
+        <div className="lg:col-span-4 space-y-4">
+          
+          {/* Current Estimate Card */}
+          <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+            <div className="flex items-center gap-2 mb-3">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Current Estimate</h3>
+              <div className="w-4 h-4 rounded-full bg-zinc-800 flex items-center justify-center">
+                <span className="text-[10px] text-gray-500">?</span>
+              </div>
+            </div>
+            <div className="text-5xl font-bold text-white mb-6">
+              {state.pending.toFixed(2)}
+            </div>
+            
+            <div className="space-y-3 mb-6">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Network Share</span>
+                <span className="text-sm font-medium text-white">{state.networkShare.toFixed(6)}%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Farming COKE per day</span>
+                <span className="text-sm font-medium text-white">{farmingPerDay}</span>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-gray-600 mb-4">
+              ESTIMATE (CHANGES WITH OTHER PLAYERS' GROW POWER)
+            </p>
+
+            {error && (
+              <div className="bg-red-900/30 border border-red-500/50 rounded p-3 mb-3">
+                <p className="text-red-300 text-xs">❌ {error}</p>
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-green-900/30 border border-green-500/50 rounded p-3 mb-3">
+                <p className="text-green-300 text-xs">✅ {success}</p>
+              </div>
+            )}
+
+            <button
+              onClick={handleClaim}
+              disabled={claiming || state.pending <= 0}
+              className="w-full bg-white hover:bg-gray-100 text-black font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              ← Back
+              {claiming ? 'Claiming...' : 'Claim COKE'}
             </button>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <p className="text-sm text-gray-500">
-            Active since {formatDate(state.activatedAt)}
-          </p>
-        </div>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {/* Grow Power */}
-        <div className="bg-black rounded p-4 border border-zinc-800">
-          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">💪 Grow Power</p>
-          <p className="text-4xl font-bold text-farm-cyan">
-            {state.basePower}
-          </p>
-        </div>
-
-        {/* Pending Rewards */}
-        <div className="bg-black rounded p-4 border border-farm-pink/30">
-          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">⏳ Pending Rewards</p>
-          <p className="text-4xl font-bold text-farm-pink">
-            {state.pending.toFixed(2)}
-          </p>
-          <p className="text-xs text-gray-600 mt-1">COKE</p>
-        </div>
-
-        {/* Total Claimed */}
-        <div className="bg-black rounded p-4 border border-zinc-800">
-          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">✅ Total Claimed</p>
-          <p className="text-4xl font-bold text-green-400">
-            {state.totalClaimed.toFixed(2)}
-          </p>
-          <p className="text-xs text-gray-600 mt-1">COKE</p>
-        </div>
-
-        {/* Network Share */}
-        <div className="bg-black rounded p-4 border border-zinc-800">
-          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">🌐 Network Share</p>
-          <p className="text-3xl font-bold text-farm-purple">
-            {state.networkShare.toFixed(4)}%
-          </p>
-        </div>
-
-        {/* Current Emission Rate */}
-        <div className="bg-black rounded p-4 border border-zinc-800">
-          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">📊 Emission Rate</p>
-          <p className="text-3xl font-bold text-yellow-400">
-            {state.currentEmissionRate.toFixed(4)}
-          </p>
-          <p className="text-xs text-gray-600 mt-1">COKE/sec</p>
-        </div>
-
-        {/* Next Halving */}
-        <div className="bg-black rounded p-4 border border-zinc-800">
-          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wider">⏰ Next Halving</p>
-          <p className="text-2xl font-bold text-orange-400">
-            {formatTimeUntil(state.nextHalvingTimestamp)}
-          </p>
-          <p className="text-[10px] text-gray-700 mt-1">
-            {formatDate(state.nextHalvingTimestamp)}
-          </p>
-        </div>
-      </div>
-
-      {/* Claim Section */}
-      <div className="card">
-        {error && (
-          <div className="bg-red-900/50 border border-red-500 rounded-lg p-4 mb-4">
-            <p className="text-red-200">❌ {error}</p>
           </div>
-        )}
 
-        {success && (
-          <div className="bg-green-900/50 border border-green-500 rounded-lg p-4 mb-4">
-            <p className="text-green-200">✅ {success}</p>
+          {/* Your Farm Card */}
+          <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-farm-pink to-farm-purple"></div>
+                <h3 className="text-lg font-bold text-white">Your Farm</h3>
+              </div>
+              {onBack && (
+                <button 
+                  onClick={onBack}
+                  className="w-8 h-8 rounded-lg border border-zinc-700 flex items-center justify-center hover:bg-zinc-800 transition-colors"
+                >
+                  <span className="text-gray-400 text-sm">←</span>
+                </button>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Farm Level</span>
+                <span className="text-sm font-bold text-white">Level 1</span>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Total Grow Power</span>
+                <span className="text-sm font-bold text-farm-cyan">{state.basePower.toLocaleString()}</span>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Total Claimed COKE</span>
+                <span className="text-sm font-bold text-green-400">{state.totalClaimed.toFixed(2)}</span>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500 flex items-center gap-1">
+                  Next halving
+                  <div className="w-4 h-4 rounded-full bg-zinc-800 flex items-center justify-center">
+                    <span className="text-[10px] text-gray-500">?</span>
+                  </div>
+                </span>
+                <span className="text-sm font-bold text-orange-400">{formatTimeUntil(state.nextHalvingTimestamp)}</span>
+              </div>
+            </div>
           </div>
-        )}
 
-        <button
-          onClick={handleClaim}
-          disabled={claiming || state.pending <= 0}
-          className="btn-primary w-full text-xl"
-        >
-          {claiming ? '⏳ Claiming...' : `🎁 Claim ${state.pending.toFixed(2)} COKE`}
-        </button>
+          {/* Additional Stats */}
+          <div className="bg-zinc-900 rounded-2xl p-6 border border-zinc-800">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">System Stats</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Emission Rate</span>
+                <span className="text-sm font-medium text-yellow-400">{state.currentEmissionRate.toFixed(4)} COKE/s</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Active Since</span>
+                <span className="text-xs font-medium text-gray-400">{new Date(state.activatedAt * 1000).toLocaleDateString()}</span>
+              </div>
+            </div>
+          </div>
 
-        {state.pending <= 0 && (
-          <p className="text-center text-gray-500 text-sm mt-4">
-            No pending rewards to claim yet. Keep growing!
-          </p>
-        )}
-      </div>
+        </div>
 
-      {/* Info Section */}
-      <div className="card border-zinc-800">
-        <h3 className="text-sm font-medium mb-3 text-farm-cyan uppercase tracking-wide">📈 How it works</h3>
-        <ul className="space-y-2 text-gray-500 text-xs">
-          <li className="flex items-start gap-2">
-            <span className="text-farm-pink mt-0.5">▸</span>
-            <span>Your lab generates COKE continuously based on your Grow Power</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-farm-pink mt-0.5">▸</span>
-            <span>Rewards are calculated from the global emission rate</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-farm-pink mt-0.5">▸</span>
-            <span>Your share is proportional to your power vs. total network power</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-farm-pink mt-0.5">▸</span>
-            <span>Emissions halve periodically to maintain scarcity</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-farm-pink mt-0.5">▸</span>
-            <span>Claim your rewards anytime - they accumulate automatically!</span>
-          </li>
-        </ul>
+        {/* RIGHT SIDE - 3D Model Area */}
+        <div className="lg:col-span-8">
+          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 h-[calc(100vh-8rem)] flex items-center justify-center overflow-hidden relative">
+            {/* 3D Scene Container */}
+            <div className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-black to-zinc-900">
+              {/* Placeholder for 3D model */}
+              <div className="w-full h-full flex flex-col items-center justify-center">
+                <div className="relative">
+                  {/* Animated beaker/flask illustration */}
+                  <div className="relative w-64 h-64 mb-8">
+                    <img 
+                      src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" 
+                      alt="Farm Lab 3D" 
+                      className="w-full h-full animate-pulse"
+                      style={{ filter: 'drop-shadow(0 0 40px rgba(255, 0, 255, 0.4))' }}
+                    />
+                  </div>
+                  
+                  {/* Floating stats around the model */}
+                  <div className="absolute -top-4 -right-4 bg-zinc-800/90 backdrop-blur-sm rounded-lg px-3 py-2 border border-farm-pink/30">
+                    <div className="text-xs text-gray-400">Power</div>
+                    <div className="text-lg font-bold text-farm-pink">{state.basePower}</div>
+                  </div>
+                  
+                  <div className="absolute -bottom-4 -left-4 bg-zinc-800/90 backdrop-blur-sm rounded-lg px-3 py-2 border border-farm-cyan/30">
+                    <div className="text-xs text-gray-400">Pending</div>
+                    <div className="text-lg font-bold text-farm-cyan">{state.pending.toFixed(2)}</div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <p className="text-gray-500 text-sm mb-2">Your COKE Lab is Active</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-gray-600">Generating rewards...</span>
+                  </div>
+                </div>
+
+                <div className="mt-8 text-xs text-gray-700">
+                  3D visualization coming soon
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
