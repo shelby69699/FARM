@@ -8,12 +8,17 @@ export default defineConfig({
     open: true
   },
   optimizeDeps: {
-    exclude: ['lucid-cardano']
+    exclude: ['lucid-cardano'],
+    esbuildOptions: {
+      target: 'esnext'
+    }
   },
   build: {
+    target: 'esnext',
     rollupOptions: {
       external: [],
       output: {
+        format: 'es',
         manualChunks: undefined
       }
     },
@@ -32,6 +37,12 @@ export default defineConfig({
   define: {
     global: 'globalThis',
     'process.env': {}
+  },
+  esbuild: {
+    target: 'esnext',
+    supported: {
+      'top-level-await': true
+    }
   }
 });
 
