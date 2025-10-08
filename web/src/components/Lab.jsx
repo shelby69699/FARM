@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import AdminDashboard from './AdminDashboard';
 import Beaker3D from './Beaker3D';
+import BoosterPack from './BoosterPack';
 
-function Lab({ address, onBack, isAdmin }) {
+function Lab({ address, onBack, isAdmin, lucid }) {
   const [state, setState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [claiming, setClaiming] = useState(false);
@@ -261,6 +262,18 @@ function Lab({ address, onBack, isAdmin }) {
               </div>
             </div>
           </div>
+
+          {/* Booster Pack */}
+          {lucid && (
+            <BoosterPack 
+              lucid={lucid} 
+              address={address}
+              onPurchased={() => {
+                // Reload state after purchase
+                loadState();
+              }}
+            />
+          )}
 
         </div>
 

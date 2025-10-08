@@ -104,13 +104,14 @@ function App() {
         {lucid && address && (
           <>
             {/* If user has lab, show ONLY the lab dashboard (including admin) */}
-            {hasLab ? (
-              <Lab 
-                address={address}
-                onBack={() => setHasLab(false)}
-                isAdmin={isAdmin}
-              />
-            ) : (
+                {hasLab ? (
+                  <Lab 
+                    address={address}
+                    onBack={() => setHasLab(false)}
+                    isAdmin={isAdmin}
+                    lucid={lucid}
+                  />
+                ) : (
               <>
                 {/* Balance Card */}
                 <div className="mb-8">

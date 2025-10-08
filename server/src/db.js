@@ -55,9 +55,22 @@ db.run(`
     created_at INTEGER DEFAULT (strftime('%s', 'now'))
   );
 
+  CREATE TABLE IF NOT EXISTS booster_packs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    address TEXT NOT NULL,
+    tx_hash TEXT UNIQUE NOT NULL,
+    pack_type TEXT NOT NULL,
+    power_bonus INTEGER NOT NULL,
+    verified INTEGER DEFAULT 0,
+    verified_at INTEGER,
+    created_at INTEGER DEFAULT (strftime('%s', 'now'))
+  );
+
   CREATE INDEX IF NOT EXISTS idx_farms_address ON farms(address);
   CREATE INDEX IF NOT EXISTS idx_payments_tx_hash ON payments(tx_hash);
   CREATE INDEX IF NOT EXISTS idx_payments_address ON payments(address);
+  CREATE INDEX IF NOT EXISTS idx_booster_packs_address ON booster_packs(address);
+  CREATE INDEX IF NOT EXISTS idx_booster_packs_tx_hash ON booster_packs(tx_hash);
 `);
 
 console.log('✓ Database initialized');
@@ -144,6 +157,32 @@ export const statements = {
   
   getAllPayments: {
     all: () => getAll('SELECT * FROM payments ORDER BY created_at DESC')
+  },
+  
+  upgradeFarmPower: {
+    run: (power_bonus, address) =>
+      runQuery('UPDATE farms SET base_power = base_power + ? WHERE address = ?',
+        [power_bonus, address])
+  },
+  
+  getBoosterPack: {
+    get: (tx_hash) => getOne('SELECT * FROM booster_packs WHERE tx_hash = ?', [tx_hash])
+  },
+  
+  createBoosterPack: {
+    run: (address, tx_hash, pack_type, power_bonus) =>
+      runQuery('INSERT INTO booster_packs (address, tx_hash, pack_type, power_bonus) VALUES (?, ?, ?, ?)',
+        [address, tx_hash, pack_type, power_bonus])
+  },
+  
+  verifyBoosterPack: {
+    run: (verified_at, tx_hash) =>
+      runQuery('UPDATE booster_packs SET verified = 1, verified_at = ? WHERE tx_hash = ?',
+        [verified_at, tx_hash])
+  },
+  
+  getBoosterPacksByAddress: {
+    all: (address) => getAll('SELECT * FROM booster_packs WHERE address = ? ORDER BY created_at DESC', [address])
   }
 };
 

@@ -230,6 +230,89 @@ app.post('/api/claim', (req, res) => {
 });
 
 /**
+ * POST /api/booster/buy
+ * Buy a booster pack to upgrade farm power
+ */
+app.post('/api/booster/buy', async (req, res) => {
+  const { address, txHash } = req.body;
+  
+  if (!address || !txHash) {
+    return res.status(400).json({ error: 'Missing address or txHash' });
+  }
+  
+  try {
+    // Check if farm exists
+    const farm = statements.getFarm.get(address);
+    if (!farm) {
+      return res.status(404).json({ error: 'Lab not found. Activate your lab first.' });
+    }
+    
+    // Check if booster pack already processed
+    const existingPack = statements.getBoosterPack.get(txHash);
+    if (existingPack && existingPack.verified === 1) {
+      return res.status(400).json({ error: 'Booster pack already claimed' });
+    }
+    
+    // Check transaction confirmation
+    const txStatus = await getTransactionStatus(txHash);
+    if (!txStatus.confirmed) {
+      return res.status(400).json({ 
+        error: 'Transaction not confirmed',
+        details: txStatus.error 
+      });
+    }
+    
+    // Verify COKE payment (300 COKE for a booster pack)
+    const BOOSTER_PACK_PRICE = 300;
+    const verification = await verifyCokePayment(txHash, BOOSTER_PACK_PRICE);
+    
+    if (!verification.verified) {
+      return res.status(400).json({ 
+        error: 'Payment verification failed',
+        details: verification.error 
+      });
+    }
+    
+    const now = Math.floor(Date.now() / 1000);
+    
+    // Generate random power bonus (10-50 power)
+    const powerBonus = Math.floor(Math.random() * 41) + 10; // 10-50
+    
+    // Determine pack rarity based on bonus
+    let packType = 'Common';
+    if (powerBonus >= 40) packType = 'Legendary';
+    else if (powerBonus >= 30) packType = 'Epic';
+    else if (powerBonus >= 20) packType = 'Rare';
+    
+    // Record booster pack
+    if (!existingPack) {
+      statements.createBoosterPack.run(address, txHash, packType, powerBonus);
+    }
+    statements.verifyBoosterPack.run(now, txHash);
+    
+    // Apply power bonus to farm
+    statements.upgradeFarmPower.run(powerBonus, address);
+    
+    console.log(`✓ Booster pack opened for ${address}: ${packType} +${powerBonus} power`);
+    
+    res.json({
+      success: true,
+      packType,
+      powerBonus,
+      newPower: farm.base_power + powerBonus,
+      message: `${packType} Pack! +${powerBonus} Grow Power!`
+    });
+    
+  } catch (error) {
+    console.error('Booster pack error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message 
+    });
+  }
+});
+
+/**
  * GET /api/leaderboard
  * Get top farms by total claimed
  */
