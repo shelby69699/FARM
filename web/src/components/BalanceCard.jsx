@@ -49,46 +49,46 @@ function BalanceCard({ lucid, address }) {
 
   return (
     <div className="card">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-white">Your Wallet</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-medium text-white uppercase tracking-wide">Your Wallet</h3>
         <button 
           onClick={loadBalances}
-          className="text-sm text-gray-500 hover:text-farm-cyan transition-colors"
+          className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
           disabled={loading}
         >
-          {loading ? '↻ Refreshing...' : '↻ Refresh'}
+          {loading ? '↻ Refresh' : '↻ Refresh'}
         </button>
       </div>
 
       {/* Address */}
-      <div className="mb-6 p-3 bg-black rounded-lg border border-zinc-800">
-        <p className="text-xs text-gray-500 mb-1 uppercase tracking-wide">Address</p>
-        <p className="font-mono text-sm break-all text-gray-400">{address}</p>
+      <div className="mb-4 p-2 bg-black rounded border border-zinc-800">
+        <p className="text-[10px] text-gray-600 mb-1 uppercase">Address</p>
+        <p className="font-mono text-xs text-gray-400 break-all">{address}</p>
       </div>
 
       {/* Balances */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         {/* ADA Balance */}
-        <div className="stat-box border-farm-cyan/20">
-          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">ADA Balance</p>
-          <p className="text-4xl font-bold text-farm-cyan">
+        <div className="bg-black rounded p-3 border border-zinc-800">
+          <p className="text-[10px] text-gray-600 mb-1 uppercase">ADA Balance</p>
+          <p className="text-2xl font-bold text-farm-cyan">
             ₳ {formatAda(adaBalance)}
           </p>
         </div>
 
         {/* COKE Balance */}
-        <div className="stat-box glow-pink border-farm-pink/30">
-          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">COKE Balance</p>
-          <p className="text-4xl font-bold bg-gradient-to-r from-farm-pink to-farm-purple bg-clip-text text-transparent">
+        <div className="bg-black rounded p-3 border border-zinc-800">
+          <p className="text-[10px] text-gray-600 mb-1 uppercase">COKE Balance</p>
+          <p className="text-2xl font-bold text-farm-pink">
             {formatCoke(cokeBalance)}
           </p>
         </div>
       </div>
 
       {cokeBalance === 0n && (
-        <div className="mt-4 p-4 bg-yellow-900/20 border border-yellow-600/50 rounded-lg">
-          <p className="text-yellow-300 text-sm">
-            ⚠️ You need COKE tokens to activate your lab
+        <div className="mt-3 p-2 bg-yellow-900/10 border border-yellow-600/30 rounded">
+          <p className="text-yellow-400 text-xs">
+            ⚠ You need COKE tokens to activate your lab
           </p>
         </div>
       )}

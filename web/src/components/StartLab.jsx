@@ -107,14 +107,14 @@ function StartLab({ lucid, address, onLabActivated }) {
 
   return (
     <div className="card">
-      <h2 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-farm-pink to-farm-cyan bg-clip-text text-transparent">
+      <h2 className="text-xl font-medium mb-6 text-center text-gray-400">
         🧪 Activate Your Lab
       </h2>
 
-      <div className="mb-8">
-        <div className="bg-gradient-to-br from-farm-pink/10 via-farm-purple/10 to-farm-cyan/10 border border-farm-cyan/30 rounded-2xl p-6 mb-6 glow-cyan">
-          <h3 className="text-xl font-bold mb-4 text-farm-cyan">What you get:</h3>
-          <ul className="space-y-3 text-gray-300">
+      <div className="mb-6">
+        <div className="bg-gradient-to-br from-farm-pink/5 via-farm-purple/5 to-farm-cyan/5 border border-farm-cyan/20 rounded p-4 mb-4">
+          <h3 className="text-sm font-medium mb-3 text-farm-cyan uppercase tracking-wide">What you get:</h3>
+          <ul className="space-y-2 text-sm text-gray-400">
             <li className="flex items-center gap-2">
               <span className="text-farm-cyan">▸</span>
               <strong className="text-white">{config.basePower}</strong> Grow Power to start
@@ -134,20 +134,20 @@ function StartLab({ lucid, address, onLabActivated }) {
           </ul>
         </div>
 
-        <div className="stat-box mb-6 glow-pink">
-          <p className="text-sm text-gray-500 mb-2 uppercase tracking-wide">Activation Cost</p>
-          <p className="text-5xl font-bold bg-gradient-to-r from-farm-pink to-farm-purple bg-clip-text text-transparent">
+        <div className="bg-black rounded p-4 mb-4 border border-zinc-800">
+          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wide">Activation Cost</p>
+          <p className="text-4xl font-bold text-farm-pink mb-1">
             {config.startLabPrice.toLocaleString()}
           </p>
-          <p className="text-lg text-farm-cyan mt-1">COKE</p>
-          <p className="text-sm text-gray-500 mt-3">
+          <p className="text-sm text-farm-cyan">COKE</p>
+          <p className="text-xs text-gray-600 mt-2">
             + {(MIN_ADA / 1_000_000).toFixed(2)} ADA (transaction minimum)
           </p>
         </div>
 
-        <div className="bg-gray-900 rounded-lg p-4 mb-6 border border-gray-700">
-          <p className="text-sm text-gray-400 mb-1">Treasury Address</p>
-          <p className="font-mono text-xs break-all text-gray-300">
+        <div className="bg-black rounded p-3 mb-4 border border-zinc-800">
+          <p className="text-[10px] text-gray-600 mb-1 uppercase">Treasury Address</p>
+          <p className="font-mono text-[11px] break-all text-gray-500">
             {config.treasuryAddress}
           </p>
         </div>
@@ -173,12 +173,12 @@ function StartLab({ lucid, address, onLabActivated }) {
       <button
         onClick={handleStartLab}
         disabled={loading || verifying}
-        className="btn-primary w-full text-xl"
+        className="btn-primary w-full"
       >
-        {loading ? '⏳ Processing...' : verifying ? '⏳ Verifying...' : '🚀 Start Lab'}
+        {loading ? 'Processing...' : verifying ? 'Verifying...' : '🚀 Start Lab'}
       </button>
 
-      <p className="text-center text-sm text-gray-500 mt-4">
+      <p className="text-center text-xs text-gray-600 mt-3">
         Make sure you have enough COKE tokens and ADA for transaction fees
       </p>
     </div>
