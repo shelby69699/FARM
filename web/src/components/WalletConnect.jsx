@@ -60,7 +60,7 @@ function WalletConnect({ onConnect, onDisconnect }) {
 
   return (
     <div className="card">
-      <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-farm-cyan to-farm-purple bg-clip-text text-transparent">Connect Wallet</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-farm-cyan to-farm-purple bg-clip-text text-transparent">Connect Wallet</h2>
       
       {error && (
         <div className="bg-red-900/30 border border-red-500/50 rounded-xl p-4 mb-4">
