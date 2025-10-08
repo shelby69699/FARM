@@ -104,9 +104,6 @@ function Lab({ address }) {
     <div className="space-y-6">
       {/* Lab Header */}
       <div className="card glow-cyan">
-        <div className="flex items-center justify-center mb-4">
-          <img src="/farm-labs-logo.svg" alt="Lab" className="w-16 h-16" />
-        </div>
         <h2 className="text-4xl font-bold mb-3 text-center bg-gradient-to-r from-farm-cyan to-farm-pink bg-clip-text text-transparent">
           Your Lab is Active
         </h2>
