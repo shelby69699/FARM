@@ -59,8 +59,8 @@ function WalletConnect({ onConnect, onDisconnect }) {
   }
 
   return (
-    <div className="max-w-md mx-auto card">
-      <h3 className="text-xs font-medium mb-2 text-center text-gray-500 uppercase tracking-wide">Connect Wallet</h3>
+    <div className="max-w-xl mx-auto card">
+      <h3 className="text-sm font-medium mb-4 text-center text-gray-400 uppercase tracking-wide">Connect Wallet</h3>
       
       {error && (
         <div className="bg-red-900/30 border border-red-500/50 rounded-xl p-4 mb-4">
@@ -78,22 +78,22 @@ function WalletConnect({ onConnect, onDisconnect }) {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-3">
           {wallets.map((wallet) => (
             <button
               key={wallet.name}
               onClick={() => handleConnect(wallet.name)}
               disabled={connecting}
-              className="flex items-center gap-1.5 p-2 bg-black hover:bg-zinc-900 rounded transition-all border border-zinc-800 hover:border-farm-cyan disabled:opacity-50 group"
+              className="flex items-center gap-2 p-3 bg-black hover:bg-zinc-900 rounded transition-all border border-zinc-800 hover:border-farm-cyan disabled:opacity-50 group"
             >
               {wallet.icon && (
                 <img 
                   src={wallet.icon} 
                   alt={wallet.displayName}
-                  className="w-5 h-5"
+                  className="w-6 h-6"
                 />
               )}
-              <span className="text-xs capitalize text-gray-500 group-hover:text-white transition-colors">
+              <span className="text-sm capitalize text-gray-400 group-hover:text-white transition-colors">
                 {wallet.displayName}
               </span>
             </button>
