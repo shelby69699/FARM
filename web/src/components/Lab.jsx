@@ -103,67 +103,70 @@ function Lab({ address }) {
   return (
     <div className="space-y-6">
       {/* Lab Header */}
-      <div className="card">
-        <h2 className="text-3xl font-bold mb-4 text-center">
-          🧪 Your Coke Lab is Active
+      <div className="card glow-cyan">
+        <div className="flex items-center justify-center mb-4">
+          <img src="/farm-labs-logo.svg" alt="Lab" className="w-16 h-16" />
+        </div>
+        <h2 className="text-4xl font-bold mb-3 text-center bg-gradient-to-r from-farm-cyan to-farm-pink bg-clip-text text-transparent">
+          Your Lab is Active
         </h2>
-        <p className="text-center text-gray-400">
-          Activated on {formatDate(state.activatedAt)}
+        <p className="text-center text-gray-500 text-sm">
+          Activated {formatDate(state.activatedAt)}
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Grow Power */}
         <div className="stat-box">
-          <p className="text-sm text-gray-400 mb-2">💪 Grow Power</p>
-          <p className="text-4xl font-bold text-green-400">
+          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">💪 Grow Power</p>
+          <p className="text-5xl font-bold text-farm-cyan">
             {state.basePower}
           </p>
         </div>
 
         {/* Pending Rewards */}
-        <div className="stat-box glow-red">
-          <p className="text-sm text-gray-400 mb-2">⏳ Pending Rewards</p>
-          <p className="text-4xl font-bold text-coke-red">
+        <div className="stat-box glow-pink border-farm-pink/30">
+          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">⏳ Pending</p>
+          <p className="text-5xl font-bold bg-gradient-to-r from-farm-pink to-farm-purple bg-clip-text text-transparent">
             {state.pending.toFixed(2)}
           </p>
-          <p className="text-xs text-gray-500 mt-1">COKE</p>
+          <p className="text-sm text-gray-500 mt-2">COKE</p>
         </div>
 
         {/* Total Claimed */}
         <div className="stat-box">
-          <p className="text-sm text-gray-400 mb-2">✅ Total Claimed</p>
-          <p className="text-4xl font-bold text-blue-400">
+          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">✅ Claimed</p>
+          <p className="text-5xl font-bold text-green-400">
             {state.totalClaimed.toFixed(2)}
           </p>
-          <p className="text-xs text-gray-500 mt-1">COKE</p>
+          <p className="text-sm text-gray-500 mt-2">COKE</p>
         </div>
 
         {/* Network Share */}
         <div className="stat-box">
-          <p className="text-sm text-gray-400 mb-2">🌐 Network Share</p>
-          <p className="text-4xl font-bold text-purple-400">
+          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">🌐 Network Share</p>
+          <p className="text-4xl font-bold text-farm-purple">
             {state.networkShare.toFixed(4)}%
           </p>
         </div>
 
         {/* Current Emission Rate */}
         <div className="stat-box">
-          <p className="text-sm text-gray-400 mb-2">📊 Emission Rate</p>
+          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">📊 Emission</p>
           <p className="text-4xl font-bold text-yellow-400">
             {state.currentEmissionRate.toFixed(4)}
           </p>
-          <p className="text-xs text-gray-500 mt-1">COKE/sec</p>
+          <p className="text-sm text-gray-500 mt-2">COKE/sec</p>
         </div>
 
         {/* Next Halving */}
         <div className="stat-box">
-          <p className="text-sm text-gray-400 mb-2">⏰ Next Halving</p>
-          <p className="text-2xl font-bold text-orange-400">
+          <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">⏰ Halving In</p>
+          <p className="text-3xl font-bold text-orange-400">
             {formatTimeUntil(state.nextHalvingTimestamp)}
           </p>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-600 mt-2">
             {formatDate(state.nextHalvingTimestamp)}
           </p>
         </div>
@@ -199,14 +202,29 @@ function Lab({ address }) {
       </div>
 
       {/* Info Section */}
-      <div className="card bg-gradient-to-r from-gray-800 to-gray-900">
-        <h3 className="text-xl font-bold mb-4">📈 How it works</h3>
-        <ul className="space-y-2 text-gray-300 text-sm">
-          <li>• Your lab generates COKE continuously based on your Grow Power</li>
-          <li>• Rewards are calculated from the global emission rate</li>
-          <li>• Your share is proportional to your power vs. total network power</li>
-          <li>• Emissions halve every {(state.nextHalvingTimestamp - state.activatedAt) / 86400} days</li>
-          <li>• Claim your rewards anytime - they accumulate automatically!</li>
+      <div className="card bg-gradient-to-br from-zinc-900 via-black to-zinc-900 border-zinc-700">
+        <h3 className="text-xl font-bold mb-4 text-farm-cyan">📈 How it works</h3>
+        <ul className="space-y-3 text-gray-400 text-sm">
+          <li className="flex items-start gap-2">
+            <span className="text-farm-pink mt-1">▸</span>
+            <span>Your lab generates COKE continuously based on your Grow Power</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-farm-pink mt-1">▸</span>
+            <span>Rewards are calculated from the global emission rate</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-farm-pink mt-1">▸</span>
+            <span>Your share is proportional to your power vs. total network power</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-farm-pink mt-1">▸</span>
+            <span>Emissions halve periodically to maintain scarcity</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-farm-pink mt-1">▸</span>
+            <span>Claim your rewards anytime - they accumulate automatically!</span>
+          </li>
         </ul>
       </div>
     </div>

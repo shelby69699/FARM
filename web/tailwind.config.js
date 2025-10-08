@@ -7,8 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        'coke-red': '#F40009',
-        'coke-dark': '#1a1a1a',
+        'farm-cyan': '#00D9FF',
+        'farm-pink': '#FF3366',
+        'farm-purple': '#9333EA',
+      },
+      fontFamily: {
+        'display': ['Inter', 'system-ui', 'sans-serif'],
       }
     },
   },

@@ -107,27 +107,40 @@ function StartLab({ lucid, address, onLabActivated }) {
 
   return (
     <div className="card">
-      <h2 className="text-3xl font-bold mb-6 text-center">
-        🧪 Activate Your Coke Lab
+      <h2 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-farm-pink to-farm-cyan bg-clip-text text-transparent">
+        🧪 Activate Your Lab
       </h2>
 
       <div className="mb-8">
-        <div className="bg-gradient-to-r from-coke-red/20 to-red-600/20 border border-coke-red rounded-lg p-6 mb-6">
-          <h3 className="text-xl font-bold mb-4">What you get:</h3>
-          <ul className="space-y-2 text-gray-300">
-            <li>✅ <strong>{config.basePower}</strong> Grow Power to start</li>
-            <li>✅ Earn COKE rewards continuously</li>
-            <li>✅ Share of global emissions based on your power</li>
-            <li>✅ Claim rewards anytime</li>
+        <div className="bg-gradient-to-br from-farm-pink/10 via-farm-purple/10 to-farm-cyan/10 border border-farm-cyan/30 rounded-2xl p-6 mb-6 glow-cyan">
+          <h3 className="text-xl font-bold mb-4 text-farm-cyan">What you get:</h3>
+          <ul className="space-y-3 text-gray-300">
+            <li className="flex items-center gap-2">
+              <span className="text-farm-cyan">▸</span>
+              <strong className="text-white">{config.basePower}</strong> Grow Power to start
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-farm-cyan">▸</span>
+              Earn COKE rewards continuously
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-farm-cyan">▸</span>
+              Share of global emissions based on your power
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-farm-cyan">▸</span>
+              Claim rewards anytime
+            </li>
           </ul>
         </div>
 
-        <div className="stat-box mb-6">
-          <p className="text-sm text-gray-400 mb-2">Activation Cost</p>
-          <p className="text-4xl font-bold text-coke-red">
-            🧪 {config.startLabPrice.toLocaleString()} COKE
+        <div className="stat-box mb-6 glow-pink">
+          <p className="text-sm text-gray-500 mb-2 uppercase tracking-wide">Activation Cost</p>
+          <p className="text-5xl font-bold bg-gradient-to-r from-farm-pink to-farm-purple bg-clip-text text-transparent">
+            {config.startLabPrice.toLocaleString()}
           </p>
-          <p className="text-sm text-gray-400 mt-2">
+          <p className="text-lg text-farm-cyan mt-1">COKE</p>
+          <p className="text-sm text-gray-500 mt-3">
             + {(MIN_ADA / 1_000_000).toFixed(2)} ADA (transaction minimum)
           </p>
         </div>

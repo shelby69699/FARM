@@ -42,15 +42,18 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <div className="min-h-screen py-8 px-4 bg-gradient-to-b from-black via-zinc-900 to-black">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <header className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-coke-red to-red-600 bg-clip-text text-transparent">
-            🧪 Coke Lab
+          <div className="flex items-center justify-center mb-6">
+            <img src="/farm-labs-logo.svg" alt="Farm Labs" className="w-24 h-24 animate-pulse" />
+          </div>
+          <h1 className="text-7xl font-bold mb-3 bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan bg-clip-text text-transparent font-display tracking-tight">
+            FARM LABS
           </h1>
-          <p className="text-xl text-gray-400">
-            Stake COKE tokens, grow your lab, earn rewards
+          <p className="text-xl text-gray-400 font-light">
+            Build your empire on Cardano
           </p>
         </header>
 
@@ -102,10 +105,15 @@ function App() {
         )}
 
         {/* Footer */}
-        <footer className="mt-16 text-center text-gray-500 text-sm">
-          <p>Powered by Cardano • Built with Lucid & React</p>
-          <p className="mt-2">
-            Network: {import.meta.env.VITE_NETWORK}
+        <footer className="mt-16 text-center text-gray-600 text-sm space-y-2">
+          <p className="flex items-center justify-center gap-2">
+            <span className="text-gray-500">Powered by</span>
+            <span className="text-farm-cyan font-semibold">Cardano</span>
+            <span className="text-gray-500">•</span>
+            <span className="text-gray-500">Built with Lucid & React</span>
+          </p>
+          <p className="text-gray-700">
+            Network: <span className="text-farm-pink font-medium">{import.meta.env.VITE_NETWORK}</span>
           </p>
         </footer>
       </div>
