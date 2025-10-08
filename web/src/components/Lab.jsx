@@ -280,34 +280,76 @@ function Lab({ address, onBack, isAdmin, lucid }) {
         <div className="lg:col-span-8">
           <div className="bg-black rounded-2xl border border-zinc-800 h-[calc(100vh-8rem)] overflow-hidden relative">
             {/* Animated Beaker Visualization */}
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
               <div className="relative">
                 {/* CSS Beaker */}
                 <div className="relative w-64 h-80">
+                  
+                  {/* Steam/Vapor Rising from Top */}
+                  {[...Array(4)].map((_, i) => (
+                    <div
+                      key={`steam-${i}`}
+                      className="absolute w-8 h-8 bg-gradient-to-t from-farm-pink/20 to-transparent rounded-full blur-md"
+                      style={{
+                        left: `${30 + i * 15}%`,
+                        top: '-20px',
+                        animation: `steam-rise ${3 + i * 0.5}s ease-out infinite`,
+                        animationDelay: `${i * 0.8}s`
+                      }}
+                    />
+                  ))}
+                  
                   {/* Beaker Container */}
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-48 h-64">
                     {/* Glass Beaker */}
                     <div className="relative w-full h-full border-4 border-gray-400/40 rounded-b-3xl bg-gradient-to-b from-transparent to-zinc-900/20"
-                         style={{ clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)' }}>
+                         style={{ 
+                           clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',
+                           animation: 'glow-pulse 3s ease-in-out infinite'
+                         }}>
                       
-                      {/* Liquid Inside */}
+                      {/* Liquid Inside - Animated */}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-farm-pink via-farm-purple to-transparent rounded-b-3xl transition-all duration-1000"
                            style={{ 
                              height: `${Math.min((state.pending / 100) * 60 + 20, 80)}%`,
-                             opacity: 0.6,
-                             boxShadow: '0 0 40px rgba(255, 0, 255, 0.5)'
+                             opacity: 0.7,
+                             boxShadow: '0 0 40px rgba(255, 0, 255, 0.6)',
+                             animation: 'liquid-bubble 2s ease-in-out infinite'
                            }}>
-                        {/* Bubbles */}
-                        {[...Array(6)].map((_, i) => (
-                          <div key={i} 
-                               className="absolute w-2 h-2 bg-white/40 rounded-full animate-pulse"
-                               style={{
-                                 left: `${20 + i * 15}%`,
-                                 bottom: `${10 + (i % 3) * 20}%`,
-                                 animationDelay: `${i * 0.3}s`,
-                                 animationDuration: `${2 + (i % 2)}s`
-                               }}
+                        
+                        {/* Active Bubbles Rising */}
+                        {[...Array(12)].map((_, i) => (
+                          <div
+                            key={`bubble-${i}`}
+                            className="absolute rounded-full bg-white/60"
+                            style={{
+                              width: `${4 + (i % 3) * 2}px`,
+                              height: `${4 + (i % 3) * 2}px`,
+                              left: `${10 + (i * 7) % 80}%`,
+                              bottom: '0',
+                              animation: `bubble-rise ${3 + (i % 4)}s ease-in infinite`,
+                              animationDelay: `${i * 0.4}s`,
+                              filter: 'blur(1px)'
+                            }}
                           />
+                        ))}
+
+                        {/* COKE Particles Floating Up */}
+                        {[...Array(8)].map((_, i) => (
+                          <div
+                            key={`particle-${i}`}
+                            className="absolute text-[10px] font-bold"
+                            style={{
+                              left: `${15 + (i * 11) % 70}%`,
+                              bottom: '10%',
+                              animation: `particle-float ${4 + (i % 3)}s ease-out infinite`,
+                              animationDelay: `${i * 0.6}s`,
+                              '--float-x': `${(i % 2 === 0 ? 1 : -1) * (10 + i * 5)}px`,
+                              color: i % 2 === 0 ? '#ff00ff' : '#00ffff'
+                            }}
+                          >
+                            +{state.currentEmissionRate.toFixed(2)}
+                          </div>
                         ))}
                       </div>
 
@@ -321,13 +363,22 @@ function Lab({ address, onBack, isAdmin, lucid }) {
                       ))}
                     </div>
 
-                    {/* Beaker Top */}
-                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-40 h-4 border-t-4 border-x-4 border-gray-400/40 rounded-t-lg"></div>
+                    {/* Beaker Top with Glow */}
+                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-40 h-4 border-t-4 border-x-4 border-gray-400/40 rounded-t-lg"
+                         style={{ boxShadow: '0 -5px 20px rgba(255, 0, 255, 0.3)' }}></div>
                   </div>
 
-                  {/* Cardano Logo Above */}
-                  <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 w-16 h-16 opacity-20">
+                  {/* Cardano Logo Above - Pulsing */}
+                  <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 w-20 h-20 opacity-20 animate-pulse">
                     <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Logo" className="w-full h-full" />
+                  </div>
+
+                  {/* Farming Status Text */}
+                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-center">
+                    <div className="flex items-center gap-2 text-green-400 text-xs font-medium animate-pulse">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span>FARMING COKE...</span>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -81,3 +81,58 @@ code {
   animation: shimmer 3s linear infinite, pulse-glow 2s ease-in-out infinite;
 }
 
+/* Beaker Animations */
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes liquid-bubble {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-300px) translateX(var(--float-x)) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 0, 255, 0.6);
+  }
+}
+
+@keyframes steam-rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-100px) scale(2);
+    opacity: 0;
+  }
+}
+
