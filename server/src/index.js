@@ -41,13 +41,13 @@ app.get('/api/config', (req, res) => {
 
 /**
  * POST /api/start
- * Activate a user's lab after verifying COKE payment
+ * Activate a user's lab after verifying COKE payment (admin skips payment)
  */
 app.post('/api/start', async (req, res) => {
   const { address, txHash } = req.body;
   
-  if (!address || !txHash) {
-    return res.status(400).json({ error: 'Missing address or txHash' });
+  if (!address) {
+    return res.status(400).json({ error: 'Missing address' });
   }
   
   try {
@@ -55,6 +55,40 @@ app.post('/api/start', async (req, res) => {
     const existingFarm = statements.getFarm.get(address);
     if (existingFarm) {
       return res.status(400).json({ error: 'Lab already activated for this address' });
+    }
+    
+    const now = Math.floor(Date.now() / 1000);
+    const isAdmin = address === config.treasuryAddress;
+    
+    // Admin can activate without payment
+    if (isAdmin) {
+      console.log(`🔐 Admin ${address} activating farm without payment`);
+      
+      // Create farm for admin
+      const farm = initializeFarm(address, now);
+      statements.createFarm.run(
+        farm.address,
+        farm.base_power,
+        farm.last_claim_timestamp,
+        farm.activated_at
+      );
+      
+      console.log(`✓ Admin lab activated for ${address}`);
+      
+      return res.json({
+        success: true,
+        message: 'Admin lab activated successfully',
+        farm: {
+          address: farm.address,
+          basePower: farm.base_power,
+          activatedAt: farm.activated_at
+        }
+      });
+    }
+    
+    // Non-admin users must provide txHash and verify payment
+    if (!txHash) {
+      return res.status(400).json({ error: 'Missing txHash' });
     }
     
     // Check if payment already processed
@@ -81,8 +115,6 @@ app.post('/api/start', async (req, res) => {
         details: verification.error 
       });
     }
-    
-    const now = Math.floor(Date.now() / 1000);
     
     // Record payment
     if (!existingPayment) {

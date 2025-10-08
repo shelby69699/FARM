@@ -292,10 +292,10 @@ function Lab({ address, onBack, isAdmin }) {
               </div>
             </div>
           </div>
-          </div>
-
         </div>
-        </>
+
+      </div>
+      </>
       )}
     </div>
   );

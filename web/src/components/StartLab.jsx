@@ -38,6 +38,37 @@ function StartLab({ lucid, address, onLabActivated }) {
     setTxHash(null);
 
     try {
+      const isAdmin = address === config.treasuryAddress;
+
+      // Admin activates without payment
+      if (isAdmin) {
+        console.log('🔐 Admin activation - skipping payment');
+        
+        // Activate lab on backend without txHash
+        const response = await fetch(`${API_BASE}/api/start`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            address: address
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.details || errorData.error || 'Failed to activate admin lab');
+        }
+
+        const result = await response.json();
+        console.log('Admin lab activated:', result);
+
+        // Success!
+        onLabActivated();
+        return;
+      }
+
+      // Regular users must pay
       // Check if user has enough COKE
       const utxos = await getWalletUtxos(lucid);
       const cokeBalance = calculateTokenBalance(utxos, COKE_UNIT);
