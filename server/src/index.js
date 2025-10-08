@@ -58,7 +58,7 @@ app.post('/api/start', async (req, res) => {
     }
     
     const now = Math.floor(Date.now() / 1000);
-    const isAdmin = address === config.treasuryAddress;
+    const isAdmin = address === config.treasury.address;
     
     // Admin can activate without payment
     if (isAdmin) {
