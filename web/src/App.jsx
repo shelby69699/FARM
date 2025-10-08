@@ -56,9 +56,9 @@ function App() {
           {/* Header */}
           <header className="text-center mb-24">
             <div className="flex items-center justify-center mb-8">
-              <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-48 h-48" />
+              <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-64 h-64" />
             </div>
-            <h1 className="text-8xl font-bold mb-4 bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan bg-clip-text text-transparent font-display tracking-tight">
+            <h1 className="text-8xl font-bold mb-4 font-display tracking-tight" style={{ color: '#ff00ff' }}>
               FARM LABS
             </h1>
             <p className="text-lg text-gray-500 font-light">
