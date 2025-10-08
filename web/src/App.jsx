@@ -4,6 +4,10 @@ import BalanceCard from './components/BalanceCard';
 import StartLab from './components/StartLab';
 import Lab from './components/Lab';
 
+// Polyfill for browser
+import { Buffer } from 'buffer';
+window.Buffer = Buffer;
+
 function App() {
   const [lucid, setLucid] = useState(null);
   const [address, setAddress] = useState(null);

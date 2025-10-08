@@ -1,4 +1,5 @@
 import { Blockfrost, Lucid } from 'lucid-cardano';
+import { Buffer } from 'buffer';
 
 const BLOCKFROST_API_URL = import.meta.env.VITE_BLOCKFROST_API_URL;
 const BLOCKFROST_API_KEY = import.meta.env.VITE_BLOCKFROST_API_KEY;
