@@ -84,14 +84,24 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-zinc-950 via-zinc-900 to-black">
+      {/* Wallet Connection - Fixed on side when connected */}
+      <WalletConnect 
+        onConnect={setLucid} 
+        onDisconnect={() => {
+          setLucid(null);
+          setAddress(null);
+          setHasLab(false);
+        }}
+      />
+
       <div className="flex-grow px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <header className="text-center pt-2 mb-4 relative">
-            {/* Info Button - Top Right */}
+            {/* Info Button - Top Right (shifted down when wallet connected) */}
             <button
               onClick={() => setShowInfo(true)}
-              className="absolute top-2 right-0 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-lg transition-all text-sm text-gray-400 hover:text-white flex items-center gap-2"
+              className={`absolute top-2 right-0 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-lg transition-all text-sm text-gray-400 hover:text-white flex items-center gap-2 ${lucid ? 'mt-12' : ''}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -114,18 +124,6 @@ function App() {
               Build your empire on Cardano
             </p>
           </header>
-
-        {/* Wallet Connection - Centered on Page */}
-        <div className="flex items-center justify-center min-h-[40vh]">
-          <WalletConnect 
-            onConnect={setLucid} 
-            onDisconnect={() => {
-              setLucid(null);
-              setAddress(null);
-              setHasLab(false);
-            }}
-          />
-        </div>
 
         {/* Connected State */}
         {lucid && address && (

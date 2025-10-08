@@ -39,17 +39,15 @@ function WalletConnect({ onConnect, onDisconnect }) {
 
   if (isConnected) {
     return (
-      <div className="card border-farm-cyan/30">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
-            <span className="text-lg text-gray-300">
-              Connected: <span className="font-bold capitalize text-farm-cyan">{selectedWallet}</span>
-            </span>
-          </div>
+      <div className="fixed top-4 right-4 z-50 bg-black/90 backdrop-blur-md border border-farm-cyan/30 rounded-lg px-3 py-2 shadow-lg shadow-farm-cyan/10">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <span className="text-xs text-gray-400">
+            <span className="capitalize text-farm-cyan font-medium">{selectedWallet}</span>
+          </span>
           <button
             onClick={handleDisconnect}
-            className="btn-secondary"
+            className="ml-2 px-2 py-1 text-[10px] bg-zinc-800 hover:bg-zinc-700 text-gray-400 hover:text-white rounded transition-colors"
           >
             Disconnect
           </button>
@@ -59,53 +57,55 @@ function WalletConnect({ onConnect, onDisconnect }) {
   }
 
   return (
-    <div className="max-w-xl mx-auto card">
-      <h3 className="text-sm font-medium mb-4 text-center text-gray-400 uppercase tracking-wide">Connect Wallet</h3>
-      
-      {error && (
-        <div className="bg-red-900/30 border border-red-500/50 rounded-xl p-4 mb-4">
-          <p className="text-red-300">❌ {error}</p>
-        </div>
-      )}
+    <div className="fixed inset-0 z-40 flex items-center justify-center px-4">
+      <div className="max-w-xl w-full card border-farm-cyan/30">
+        <h3 className="text-sm font-medium mb-4 text-center text-gray-400 uppercase tracking-wide">Connect Wallet</h3>
+        
+        {error && (
+          <div className="bg-red-900/30 border border-red-500/50 rounded-xl p-4 mb-4">
+            <p className="text-red-300">❌ {error}</p>
+          </div>
+        )}
 
-      {wallets.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-gray-400 mb-4">No Cardano wallets detected</p>
-          <p className="text-sm text-gray-500">
-            Please install a CIP-30 compatible wallet extension
-            <br />
-            (Nami, Eternl, Flint, Lace, etc.)
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-3 gap-3">
-          {wallets.map((wallet) => (
-            <button
-              key={wallet.name}
-              onClick={() => handleConnect(wallet.name)}
-              disabled={connecting}
-              className="flex items-center gap-2 p-3 bg-black hover:bg-zinc-900 rounded transition-all border border-zinc-800 hover:border-farm-cyan disabled:opacity-50 group"
-            >
-              {wallet.icon && (
-                <img 
-                  src={wallet.icon} 
-                  alt={wallet.displayName}
-                  className="w-6 h-6"
-                />
-              )}
-              <span className="text-sm capitalize text-gray-400 group-hover:text-white transition-colors">
-                {wallet.displayName}
-              </span>
-            </button>
-          ))}
-        </div>
-      )}
+        {wallets.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-400 mb-4">No Cardano wallets detected</p>
+            <p className="text-sm text-gray-500">
+              Please install a CIP-30 compatible wallet extension
+              <br />
+              (Nami, Eternl, Flint, Lace, etc.)
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-3">
+            {wallets.map((wallet) => (
+              <button
+                key={wallet.name}
+                onClick={() => handleConnect(wallet.name)}
+                disabled={connecting}
+                className="flex items-center gap-2 p-3 bg-black hover:bg-zinc-900 rounded transition-all border border-zinc-800 hover:border-farm-cyan disabled:opacity-50 group"
+              >
+                {wallet.icon && (
+                  <img 
+                    src={wallet.icon} 
+                    alt={wallet.displayName}
+                    className="w-6 h-6"
+                  />
+                )}
+                <span className="text-sm capitalize text-gray-400 group-hover:text-white transition-colors">
+                  {wallet.displayName}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
 
-      {connecting && (
-        <div className="text-center mt-4">
-          <p className="text-farm-cyan animate-pulse">Connecting...</p>
-        </div>
-      )}
+        {connecting && (
+          <div className="text-center mt-4">
+            <p className="text-farm-cyan animate-pulse">Connecting...</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
