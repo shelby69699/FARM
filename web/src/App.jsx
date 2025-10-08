@@ -128,10 +128,10 @@ function App() {
       <footer className="py-6 text-center border-t border-zinc-900">
         <p className="flex items-center justify-center gap-2 text-xs text-gray-600">
           <span>Powered by</span>
-          <span className="text-farm-cyan font-medium">Cardano</span>
-          <span>•</span>
-          <span>Built by</span>
           <span className="text-farm-pink font-medium">Farm Labs</span>
+          <span>•</span>
+          <span>Built on</span>
+          <span className="text-farm-cyan font-medium">Cardano</span>
         </p>
       </footer>
     </div>
