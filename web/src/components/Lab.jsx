@@ -87,7 +87,7 @@ function Lab({ address, onBack, isAdmin, lucid }) {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-farm-pink mb-4"></div>
-          <p className="text-gray-400">Loading your farm...</p>
+          <p className="text-gray-400">Loading your lab...</p>
         </div>
       </div>
     );
@@ -97,7 +97,7 @@ function Lab({ address, onBack, isAdmin, lucid }) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400">Failed to load farm state</p>
+          <p className="text-red-400">Failed to load lab state</p>
           <button onClick={onBack} className="mt-4 text-farm-cyan hover:text-farm-pink transition-colors">
             ← Go Back
           </button>
@@ -109,7 +109,7 @@ function Lab({ address, onBack, isAdmin, lucid }) {
   const farmingPerDay = (state.currentEmissionRate * state.networkShare / 100 * 86400).toFixed(2);
 
   return (
-    <div className="min-h-screen pb-8">
+    <div className="min-h-screen pb-8 bg-gradient-to-b from-zinc-950 via-zinc-900 to-black">
       {/* Show Admin Dashboard if toggled */}
       {isAdmin && showAdmin ? (
         <div className="space-y-4">
@@ -119,7 +119,7 @@ function Lab({ address, onBack, isAdmin, lucid }) {
               onClick={() => setShowAdmin(false)}
               className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors"
             >
-              ← Back to Farm
+              ← Back to Lab
             </button>
           </div>
           <AdminDashboard address={address} />
@@ -127,7 +127,7 @@ function Lab({ address, onBack, isAdmin, lucid }) {
       ) : (
         <>
           {/* Top Bar */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-6 px-4 pt-4">
             <div className="flex items-center gap-4">
               {onBack && (
                 <button 
@@ -154,239 +154,79 @@ function Lab({ address, onBack, isAdmin, lucid }) {
             )}
           </div>
 
-          {/* Main Dashboard Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* Main Grid Layout */}
+          <div className="grid grid-cols-12 gap-6 px-4">
             
-            {/* LEFT COLUMN - Main Stats */}
-            <div className="xl:col-span-2 space-y-6">
+            {/* LEFT SIDEBAR - Stats */}
+            <div className="col-span-12 lg:col-span-3 space-y-4">
               
-              {/* Pending Rewards - Hero Card */}
-              <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
-                <div className="relative bg-gradient-to-br from-zinc-900 to-black rounded-2xl p-8 border border-zinc-800/50">
-                  <div className="flex items-start justify-between mb-6">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Live Rewards</span>
-                      </div>
-                      <div className="text-6xl font-bold bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan bg-clip-text text-transparent mb-2">
-                        {state.pending.toFixed(2)}
-                      </div>
-                      <div className="text-lg text-gray-500 font-medium">COKE</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs text-gray-500 mb-1">Daily Rate</div>
-                      <div className="text-2xl font-bold text-farm-cyan">{farmingPerDay}</div>
-                      <div className="text-xs text-gray-600">COKE/day</div>
-                    </div>
-                  </div>
-
-                  {error && (
-                    <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-3 mb-4">
-                      <p className="text-red-300 text-sm">❌ {error}</p>
-                    </div>
-                  )}
-
-                  {success && (
-                    <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3 mb-4">
-                      <p className="text-green-300 text-sm">✅ {success}</p>
-                    </div>
-                  )}
-
-                  <button
-                    onClick={handleClaim}
-                    disabled={claiming || state.pending <= 0}
-                    className="w-full bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan hover:shadow-lg hover:shadow-farm-pink/50 text-white font-bold py-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100"
-                  >
-                    {claiming ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                        Claiming...
-                      </span>
-                    ) : state.pending <= 0 ? (
-                      '💤 No Rewards Yet'
-                    ) : (
-                      `🎁 Claim ${state.pending.toFixed(2)} COKE`
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* Stats Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                {/* Network Share */}
-                <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-6 border border-zinc-800/50">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-farm-cyan/10 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-farm-cyan" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 uppercase tracking-wide">Network Share</div>
-                      <div className="text-2xl font-bold text-white">{state.networkShare.toFixed(4)}%</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Grow Power */}
-                <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-6 border border-zinc-800/50">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-farm-pink/10 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-farm-pink" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 uppercase tracking-wide">Grow Power</div>
-                      <div className="text-2xl font-bold text-white">{state.basePower.toLocaleString()}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Total Harvested */}
-                <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-6 border border-zinc-800/50">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 uppercase tracking-wide">Total Harvested</div>
-                      <div className="text-2xl font-bold text-white">{state.totalClaimed.toFixed(2)}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Emission Rate */}
-                <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-6 border border-zinc-800/50">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 uppercase tracking-wide">Emission Rate</div>
-                      <div className="text-2xl font-bold text-white">{state.currentEmissionRate.toFixed(4)}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Timeline */}
+              {/* Current Estimate Card */}
               <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-6 border border-zinc-800/50">
-                <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Timeline</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-                    <span className="text-sm text-gray-400">Lab Activated</span>
-                    <span className="text-sm font-medium text-white">{formatDate(state.activatedAt)}</span>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Current Estimate</div>
+                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="text-5xl font-bold text-white mb-6">{state.pending.toFixed(2)}</div>
+                
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500">Network Share</span>
+                    <span className="text-farm-cyan font-medium">{state.networkShare.toFixed(4)}%</span>
                   </div>
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-sm text-gray-400">Next Halving</span>
-                    <span className="text-sm font-medium text-orange-400">{formatTimeUntil(state.nextHalvingTimestamp)}</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500">Farming per day</span>
+                    <span className="text-white font-medium">{farmingPerDay}</span>
                   </div>
                 </div>
+
+                <button
+                  onClick={handleClaim}
+                  disabled={claiming || state.pending <= 0}
+                  className="w-full mt-6 bg-white hover:bg-gray-100 text-black font-bold py-3 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {claiming ? 'Claiming...' : state.pending <= 0 ? 'No Rewards' : 'Claim COKE'}
+                </button>
+
+                {error && (
+                  <div className="mt-3 bg-red-900/20 border border-red-500/30 rounded-lg p-2">
+                    <p className="text-red-300 text-xs">❌ {error}</p>
+                  </div>
+                )}
+
+                {success && (
+                  <div className="mt-3 bg-green-900/20 border border-green-500/30 rounded-lg p-2">
+                    <p className="text-green-300 text-xs">✅ {success}</p>
+                  </div>
+                )}
               </div>
 
-            </div>
-
-            {/* RIGHT COLUMN - Visual + Booster */}
-            <div className="space-y-6">
-              
-              {/* COKE Production Monitor */}
-              <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl border border-red-900/30 p-6 aspect-square flex flex-col justify-between relative overflow-hidden">
-                {/* Danger stripes background */}
-                <div className="absolute inset-0 opacity-5">
-                  <div className="absolute inset-0" style={{
-                    backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,0,0,0.3) 35px, rgba(255,0,0,0.3) 70px)'
-                  }}></div>
-                </div>
-
-                {/* Header */}
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs font-bold text-red-400 uppercase tracking-wider">Production Status</span>
-                    </div>
-                    <div className="px-2 py-1 bg-green-500/20 border border-green-500/30 rounded text-[10px] text-green-400 font-bold">
-                      COOKING
-                    </div>
-                  </div>
-                  
-                  {/* Production Rate */}
-                  <div className="bg-black/60 rounded-lg p-4 border border-zinc-800 mb-4">
-                    <div className="text-[10px] text-gray-600 uppercase mb-1">Current Output</div>
-                    <div className="text-3xl font-bold text-farm-pink">
-                      {(state.currentEmissionRate * state.networkShare / 100 * 3600).toFixed(1)}
-                    </div>
-                    <div className="text-xs text-gray-500">COKE per hour</div>
+              {/* Farm Info Card */}
+              <div className="bg-gradient-to-br from-zinc-900 to-black rounded-xl p-5 border border-zinc-800/50">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-farm-pink to-farm-purple"></div>
+                  <div>
+                    <div className="text-sm font-bold text-white">COKE Lab</div>
                   </div>
                 </div>
-
-                {/* Production Bars */}
-                <div className="relative z-10 space-y-4">
-                  {/* Power Level */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] text-gray-500 uppercase font-semibold">Power Level</span>
-                      <span className="text-xs text-farm-pink font-bold">{state.basePower}</span>
-                    </div>
-                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-farm-pink to-farm-purple"
-                        style={{ 
-                          width: `${Math.min((state.basePower / 500) * 100, 100)}%`,
-                          boxShadow: '0 0 10px rgba(255, 0, 255, 0.5)'
-                        }}
-                      ></div>
-                    </div>
+                
+                <div className="space-y-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500">Farm Level</span>
+                    <span className="text-white font-medium">Level 1</span>
                   </div>
-
-                  {/* Production Efficiency */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] text-gray-500 uppercase font-semibold">Network Share</span>
-                      <span className="text-xs text-farm-cyan font-bold">{state.networkShare.toFixed(4)}%</span>
-                    </div>
-                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-farm-cyan to-farm-purple"
-                        style={{ 
-                          width: `${Math.min(state.networkShare * 100, 100)}%`,
-                          boxShadow: '0 0 10px rgba(0, 255, 255, 0.5)'
-                        }}
-                      ></div>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500">Total Grow Power</span>
+                    <span className="text-white font-medium">{state.basePower.toLocaleString()}</span>
                   </div>
-
-                  {/* Batch Progress */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] text-gray-500 uppercase font-semibold">Batch Progress</span>
-                      <span className="text-xs text-yellow-400 font-bold">{state.pending.toFixed(0)} COKE</span>
-                    </div>
-                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-yellow-500 to-orange-500 animate-pulse"
-                        style={{ 
-                          width: `${Math.min((state.pending / 100) * 100, 100)}%`,
-                          boxShadow: '0 0 10px rgba(234, 179, 8, 0.5)'
-                        }}
-                      ></div>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500">Total Claimed</span>
+                    <span className="text-white font-medium">{state.totalClaimed.toFixed(2)}</span>
                   </div>
-                </div>
-
-                {/* Warning Label */}
-                <div className="relative z-10 mt-4">
-                  <div className="bg-yellow-900/20 border border-yellow-500/30 rounded px-3 py-2 text-center">
-                    <div className="text-[10px] text-yellow-400 font-bold uppercase tracking-wide">
-                      ⚠ Unauthorized Production Facility
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500">Next halving</span>
+                    <span className="text-orange-400 font-medium">{formatTimeUntil(state.nextHalvingTimestamp)}</span>
                   </div>
                 </div>
               </div>
@@ -401,12 +241,149 @@ function Lab({ address, onBack, isAdmin, lucid }) {
                   }}
                 />
               )}
+            </div>
 
+            {/* CENTER - 3D Isometric Lab View */}
+            <div className="col-span-12 lg:col-span-9">
+              <div className="relative bg-gradient-to-br from-purple-900/20 via-black to-pink-900/20 rounded-2xl overflow-hidden border border-purple-500/20" style={{ height: '600px' }}>
+                
+                {/* 3D Scene Container */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative" style={{ 
+                    transform: 'rotateX(60deg) rotateZ(45deg)',
+                    transformStyle: 'preserve-3d',
+                    width: '400px',
+                    height: '400px'
+                  }}>
+                    
+                    {/* Floor */}
+                    <div className="absolute" style={{
+                      width: '400px',
+                      height: '400px',
+                      background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%)',
+                      border: '2px solid rgba(168, 85, 247, 0.3)',
+                      transform: 'translateZ(-50px)',
+                      boxShadow: '0 0 60px rgba(168, 85, 247, 0.4)'
+                    }}></div>
+
+                    {/* Production Tank */}
+                    <div className="absolute" style={{
+                      width: '100px',
+                      height: '150px',
+                      left: '150px',
+                      top: '150px',
+                      background: 'linear-gradient(180deg, rgba(255, 0, 128, 0.3) 0%, rgba(255, 0, 128, 0.6) 100%)',
+                      border: '2px solid rgba(255, 0, 128, 0.8)',
+                      borderRadius: '10px',
+                      transform: 'translateZ(75px)',
+                      boxShadow: '0 0 40px rgba(255, 0, 128, 0.6)',
+                      animation: 'pulse 2s ease-in-out infinite'
+                    }}>
+                      {/* Liquid Level Indicator */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-farm-pink" style={{
+                        height: `${Math.min((state.pending / 100) * 100, 100)}%`,
+                        opacity: 0.8,
+                        boxShadow: '0 0 20px rgba(255, 0, 128, 0.8)'
+                      }}></div>
+                    </div>
+
+                    {/* Power Generator */}
+                    <div className="absolute" style={{
+                      width: '80px',
+                      height: '80px',
+                      left: '50px',
+                      top: '100px',
+                      background: 'linear-gradient(180deg, rgba(0, 255, 255, 0.3) 0%, rgba(0, 255, 255, 0.6) 100%)',
+                      border: '2px solid rgba(0, 255, 255, 0.8)',
+                      borderRadius: '50%',
+                      transform: 'translateZ(40px)',
+                      boxShadow: '0 0 40px rgba(0, 255, 255, 0.8)',
+                      animation: 'spin 3s linear infinite'
+                    }}></div>
+
+                    {/* Control Panel */}
+                    <div className="absolute" style={{
+                      width: '120px',
+                      height: '100px',
+                      left: '250px',
+                      top: '80px',
+                      background: 'linear-gradient(180deg, rgba(30, 30, 30, 0.9) 0%, rgba(10, 10, 10, 0.9) 100%)',
+                      border: '2px solid rgba(168, 85, 247, 0.6)',
+                      borderRadius: '5px',
+                      transform: 'translateZ(50px)',
+                      boxShadow: '0 0 20px rgba(168, 85, 247, 0.4)'
+                    }}></div>
+
+                    {/* Storage Boxes */}
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="absolute" style={{
+                        width: '60px',
+                        height: '60px',
+                        left: `${80 + i * 70}px`,
+                        top: '280px',
+                        background: 'linear-gradient(180deg, rgba(50, 50, 50, 0.9) 0%, rgba(30, 30, 30, 0.9) 100%)',
+                        border: '2px solid rgba(100, 100, 100, 0.6)',
+                        borderRadius: '3px',
+                        transform: 'translateZ(30px)',
+                        boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'
+                      }}></div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Info Overlays */}
+                <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm border border-farm-cyan/30 rounded-lg px-4 py-2">
+                  <div className="text-xs text-gray-400">Production Rate</div>
+                  <div className="text-2xl font-bold text-farm-pink">{(state.currentEmissionRate * state.networkShare / 100 * 3600).toFixed(1)}</div>
+                  <div className="text-xs text-gray-500">COKE/hour</div>
+                </div>
+
+                <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/80 backdrop-blur-sm border border-green-500/30 rounded-lg px-3 py-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className="text-xs text-green-400 font-bold">PRODUCTION ACTIVE</div>
+                </div>
+
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-black/80 backdrop-blur-sm border border-zinc-800 rounded-lg p-4">
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <div className="text-xs text-gray-500">Power</div>
+                        <div className="text-lg font-bold text-farm-pink">{state.basePower}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-500">Efficiency</div>
+                        <div className="text-lg font-bold text-farm-cyan">{state.networkShare.toFixed(4)}%</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-500">Pending</div>
+                        <div className="text-lg font-bold text-yellow-400">{state.pending.toFixed(0)}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="absolute bottom-4 right-4">
+                  <button className="px-6 py-2 bg-white hover:bg-gray-100 text-black font-bold rounded-lg transition-all">
+                    Customize
+                  </button>
+                </div>
+              </div>
             </div>
 
           </div>
         </>
       )}
+
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+        @keyframes spin {
+          from { transform: translateZ(40px) rotate(0deg); }
+          to { transform: translateZ(40px) rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }
