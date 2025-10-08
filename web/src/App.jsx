@@ -99,18 +99,18 @@ function App() {
               How It Works
             </button>
 
-            <div className="flex items-center justify-center -mb-8">
+            <div className="flex items-center justify-center -mb-20">
               <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-96 h-96" />
             </div>
-            <div className="mb-1">
-              <h1 className="text-9xl font-bold font-display tracking-tight animated-title leading-none">
+            <div className="-mb-2">
+              <h1 className="text-9xl font-bold font-display tracking-tight animated-title leading-none mb-0">
                 HOOKED
               </h1>
-              <p className="text-3xl font-medium text-gray-400 mt-0">
+              <p className="text-3xl font-medium text-gray-400">
                 BY FARM LABS
               </p>
             </div>
-            <p className="text-lg text-gray-500 font-light mt-0">
+            <p className="text-lg text-gray-500 font-light">
               Build your empire on Cardano
             </p>
           </header>
