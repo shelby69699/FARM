@@ -136,11 +136,21 @@ function StartLab({ lucid, address, onLabActivated }) {
     );
   }
 
+  const isAdmin = address === config.treasuryAddress;
+
   return (
     <div className="card">
       <h2 className="text-xl font-medium mb-6 text-center text-gray-400">
-        🧪 Activate Your Lab
+        {isAdmin ? '🔐 Admin Activation' : '🧪 Activate Your Lab'}
       </h2>
+
+      {isAdmin && (
+        <div className="bg-purple-900/30 border border-purple-500/50 rounded-lg p-4 mb-6">
+          <p className="text-purple-200 text-sm text-center font-medium">
+            ⚡ Admin wallet detected - Free activation (no payment required)
+          </p>
+        </div>
+      )}
 
       <div className="mb-6">
         <div className="bg-gradient-to-br from-farm-pink/5 via-farm-purple/5 to-farm-cyan/5 border border-farm-cyan/20 rounded p-4 mb-4">
@@ -165,23 +175,27 @@ function StartLab({ lucid, address, onLabActivated }) {
           </ul>
         </div>
 
-        <div className="bg-black rounded p-4 mb-4 border border-zinc-800">
-          <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wide">Activation Cost</p>
-          <p className="text-4xl font-bold text-farm-pink mb-1">
-            {config.startLabPrice.toLocaleString()}
-          </p>
-          <p className="text-sm text-farm-cyan">COKE</p>
-          <p className="text-xs text-gray-600 mt-2">
-            + {(MIN_ADA / 1_000_000).toFixed(2)} ADA (transaction minimum)
-          </p>
-        </div>
+        {!isAdmin && (
+          <>
+            <div className="bg-black rounded p-4 mb-4 border border-zinc-800">
+              <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wide">Activation Cost</p>
+              <p className="text-4xl font-bold text-farm-pink mb-1">
+                {config.startLabPrice.toLocaleString()}
+              </p>
+              <p className="text-sm text-farm-cyan">COKE</p>
+              <p className="text-xs text-gray-600 mt-2">
+                + {(MIN_ADA / 1_000_000).toFixed(2)} ADA (transaction minimum)
+              </p>
+            </div>
 
-        <div className="bg-black rounded p-3 mb-4 border border-zinc-800">
-          <p className="text-[10px] text-gray-600 mb-1 uppercase">Treasury Address</p>
-          <p className="font-mono text-[11px] break-all text-gray-500">
-            {config.treasuryAddress}
-          </p>
-        </div>
+            <div className="bg-black rounded p-3 mb-4 border border-zinc-800">
+              <p className="text-[10px] text-gray-600 mb-1 uppercase">Treasury Address</p>
+              <p className="font-mono text-[11px] break-all text-gray-500">
+                {config.treasuryAddress}
+              </p>
+            </div>
+          </>
+        )}
       </div>
 
       {error && (
@@ -206,12 +220,14 @@ function StartLab({ lucid, address, onLabActivated }) {
         disabled={loading || verifying}
         className="btn-primary w-full"
       >
-        {loading ? 'Processing...' : verifying ? 'Verifying...' : '🚀 Start Lab'}
+        {loading ? 'Activating...' : verifying ? 'Verifying...' : isAdmin ? '⚡ Instant Activate' : '🚀 Start Lab'}
       </button>
 
-      <p className="text-center text-xs text-gray-600 mt-3">
-        Make sure you have enough COKE tokens and ADA for transaction fees
-      </p>
+      {!isAdmin && (
+        <p className="text-center text-xs text-gray-600 mt-3">
+          Make sure you have enough COKE tokens and ADA for transaction fees
+        </p>
+      )}
     </div>
   );
 }
