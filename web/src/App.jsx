@@ -4,6 +4,7 @@ import BalanceCard from './components/BalanceCard';
 import StartLab from './components/StartLab';
 import Lab from './components/Lab';
 import AdminDashboard from './components/AdminDashboard';
+import InfoPage from './components/InfoPage';
 
 // Polyfill for browser
 import { Buffer } from 'buffer';
@@ -15,6 +16,7 @@ function App() {
   const [hasLab, setHasLab] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
   const TREASURY_ADDRESS = import.meta.env.VITE_TREASURY_ADDRESS;
@@ -71,12 +73,32 @@ function App() {
     setHasLab(true);
   };
 
+  // Show info page if toggled
+  if (showInfo) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-black">
+        <InfoPage onClose={() => setShowInfo(false)} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-zinc-950 via-zinc-900 to-black">
       <div className="flex-grow py-6 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <header className="text-center mb-24">
+          <header className="text-center mb-24 relative">
+            {/* Info Button - Top Right */}
+            <button
+              onClick={() => setShowInfo(true)}
+              className="absolute top-0 right-0 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-lg transition-all text-sm text-gray-400 hover:text-white flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              How It Works
+            </button>
+
             <div className="flex items-center justify-center mb-3">
               <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-80 h-80" />
             </div>
@@ -141,13 +163,21 @@ function App() {
       
       {/* Footer - Fixed at bottom */}
       <footer className="py-6 text-center border-t border-zinc-900">
-        <p className="flex items-center justify-center gap-2 text-xs text-gray-600">
-          <span>Powered by</span>
-          <span className="text-farm-pink font-medium">Farm Labs</span>
-          <span>•</span>
-          <span>Built on</span>
-          <span className="text-farm-cyan font-medium">Cardano</span>
-        </p>
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={() => setShowInfo(true)}
+            className="text-xs text-gray-500 hover:text-farm-cyan transition-colors underline"
+          >
+            📚 How It Works & Documentation
+          </button>
+          <p className="flex items-center justify-center gap-2 text-xs text-gray-600">
+            <span>Powered by</span>
+            <span className="text-farm-pink font-medium">Farm Labs</span>
+            <span>•</span>
+            <span>Built on</span>
+            <span className="text-farm-cyan font-medium">Cardano</span>
+          </p>
+        </div>
       </footer>
     </div>
   );
