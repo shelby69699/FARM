@@ -54,14 +54,14 @@ function App() {
       <div className="flex-grow py-8 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <header className="text-center mb-8">
-            <div className="flex items-center justify-center mb-4">
-              <img src="/farm-labs-logo.svg" alt="Farm Labs" className="w-20 h-20" />
+          <header className="text-center mb-12">
+            <div className="flex items-center justify-center mb-6">
+              <img src="/farm-labs-logo.svg" alt="Farm Labs" className="w-32 h-32" />
             </div>
-            <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan bg-clip-text text-transparent font-display tracking-tight">
+            <h1 className="text-8xl font-bold mb-4 bg-gradient-to-r from-farm-pink via-farm-purple to-farm-cyan bg-clip-text text-transparent font-display tracking-tight">
               FARM LABS
             </h1>
-            <p className="text-sm text-gray-500 font-light">
+            <p className="text-lg text-gray-500 font-light">
               Build your empire on Cardano
             </p>
           </header>
