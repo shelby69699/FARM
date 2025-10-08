@@ -51,7 +51,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-zinc-950 via-zinc-900 to-black">
-      <div className="flex-grow py-12 px-4">
+      <div className="flex-grow py-6 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <header className="text-center mb-24">
