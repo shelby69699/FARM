@@ -1,7 +1,6 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Environment, Float, MeshTransmissionMaterial } from '@react-three/drei';
-import * as THREE from 'three';
+import { OrbitControls, Float } from '@react-three/drei';
 
 function AnimatedBeaker({ power, pending }) {
   const beakerRef = useRef();
@@ -38,14 +37,14 @@ function AnimatedBeaker({ power, pending }) {
         {/* Beaker Glass Body */}
         <mesh position={[0, 0, 0]} castShadow receiveShadow>
           <cylinderGeometry args={[1.2, 0.8, 3, 32]} />
-          <MeshTransmissionMaterial
-            thickness={0.2}
-            roughness={0.1}
-            transmission={0.95}
-            ior={1.5}
-            chromaticAberration={0.02}
-            backside={true}
+          <meshPhysicalMaterial
             color="#ffffff"
+            transparent={true}
+            opacity={0.3}
+            roughness={0.1}
+            metalness={0.1}
+            transmission={0.9}
+            thickness={0.5}
           />
         </mesh>
 
@@ -108,38 +107,44 @@ function AnimatedBeaker({ power, pending }) {
   );
 }
 
+function LoadingFallback() {
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="text-gray-500 animate-pulse">Loading 3D...</div>
+    </div>
+  );
+}
+
 export default function Beaker3D({ power = 100, pending = 0 }) {
   return (
     <div className="w-full h-full">
-      <Canvas
-        camera={{ position: [0, 0, 6], fov: 45 }}
-        shadows
-        gl={{ antialias: true, alpha: true }}
-      >
-        <color attach="background" args={['#000000']} />
-        
-        {/* Lighting */}
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[5, 5, 5]} intensity={1} castShadow />
-        <pointLight position={[-5, 5, -5]} intensity={0.5} color="#ff00ff" />
-        <pointLight position={[5, -5, 5]} intensity={0.5} color="#00ffff" />
-        
-        {/* 3D Scene */}
-        <AnimatedBeaker power={power} pending={pending} />
-        
-        {/* Environment */}
-        <Environment preset="city" />
-        
-        {/* Camera Controls */}
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          minPolarAngle={Math.PI / 3}
-          maxPolarAngle={Math.PI / 1.5}
-          autoRotate
-          autoRotateSpeed={0.5}
-        />
-      </Canvas>
+      <Suspense fallback={<LoadingFallback />}>
+        <Canvas
+          camera={{ position: [0, 0, 6], fov: 45 }}
+          gl={{ antialias: true, alpha: true }}
+        >
+          <color attach="background" args={['#000000']} />
+          
+          {/* Lighting */}
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[5, 5, 5]} intensity={1} />
+          <pointLight position={[-5, 5, -5]} intensity={0.5} color="#ff00ff" />
+          <pointLight position={[5, -5, 5]} intensity={0.5} color="#00ffff" />
+          
+          {/* 3D Scene */}
+          <AnimatedBeaker power={power} pending={pending} />
+          
+          {/* Camera Controls */}
+          <OrbitControls
+            enableZoom={false}
+            enablePan={false}
+            minPolarAngle={Math.PI / 3}
+            maxPolarAngle={Math.PI / 1.5}
+            autoRotate
+            autoRotateSpeed={0.5}
+          />
+        </Canvas>
+      </Suspense>
     </div>
   );
 }
