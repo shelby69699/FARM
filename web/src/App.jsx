@@ -102,9 +102,14 @@ function App() {
             <div className="flex items-center justify-center mb-3">
               <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-80 h-80" />
             </div>
-            <h1 className="text-8xl font-bold mb-4 font-display tracking-tight animated-title">
-              FARM LABS
-            </h1>
+            <div className="mb-4">
+              <h1 className="text-9xl font-bold font-display tracking-tight animated-title leading-none">
+                HOOKED
+              </h1>
+              <p className="text-3xl font-medium text-gray-400 mt-2">
+                BY FARM LABS
+              </p>
+            </div>
             <p className="text-lg text-gray-500 font-light">
               Build your empire on Cardano
             </p>
