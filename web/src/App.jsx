@@ -100,7 +100,7 @@ function App() {
             </button>
 
             <div className="flex items-center justify-center mb-3">
-              <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-80 h-80" />
+              <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-96 h-96" />
             </div>
             <div className="mb-4">
               <h1 className="text-9xl font-bold font-display tracking-tight animated-title leading-none">
