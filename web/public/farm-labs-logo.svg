@@ -1,19 +1,19 @@
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Beaker outline (blue) -->
-  <path d="M80 40 L80 80 L60 140 C55 155 60 170 75 175 L125 175 C140 170 145 155 140 140 L120 80 L120 40" stroke="#00D9FF" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Beaker outline (gray) -->
+  <path d="M80 40 L80 80 L60 140 C55 155 60 170 75 175 L125 175 C140 170 145 155 140 140 L120 80 L120 40" stroke="#808080" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   
-  <!-- Liquid inside (red/pink) -->
-  <ellipse cx="100" cy="165" rx="30" ry="8" fill="#FF3366" opacity="0.3"/>
-  <path d="M70 165 L70 145 C70 140 75 135 85 132 L115 132 C125 135 130 140 130 145 L130 165" fill="#FF3366" opacity="0.8"/>
+  <!-- Liquid inside (gray) -->
+  <ellipse cx="100" cy="165" rx="30" ry="8" fill="#606060" opacity="0.3"/>
+  <path d="M70 165 L70 145 C70 140 75 135 85 132 L115 132 C125 135 130 140 130 145 L130 165" fill="#707070" opacity="0.8"/>
   
-  <!-- Bubbles rising -->
-  <circle cx="100" cy="150" r="4" fill="#FF3366"/>
-  <circle cx="90" cy="135" r="3" fill="#FF3366"/>
-  <circle cx="110" cy="140" r="3" fill="#FF3366"/>
-  <circle cx="95" cy="120" r="2.5" fill="#FF3366"/>
-  <circle cx="105" cy="125" r="2.5" fill="#FF3366"/>
-  <circle cx="100" cy="110" r="2" fill="#FF3366"/>
-  <circle cx="108" cy="100" r="2" fill="#FF3366"/>
-  <circle cx="92" cy="105" r="2" fill="#FF3366"/>
+  <!-- Bubbles rising (gray) -->
+  <circle cx="100" cy="150" r="4" fill="#888888"/>
+  <circle cx="90" cy="135" r="3" fill="#888888"/>
+  <circle cx="110" cy="140" r="3" fill="#888888"/>
+  <circle cx="95" cy="120" r="2.5" fill="#888888"/>
+  <circle cx="105" cy="125" r="2.5" fill="#888888"/>
+  <circle cx="100" cy="110" r="2" fill="#888888"/>
+  <circle cx="108" cy="100" r="2" fill="#888888"/>
+  <circle cx="92" cy="105" r="2" fill="#888888"/>
 </svg>
 
