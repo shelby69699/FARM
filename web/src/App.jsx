@@ -109,16 +109,13 @@ function App() {
         )}
 
         {/* Footer */}
-        <footer className="mt-16 text-center text-gray-600 text-sm space-y-2">
+        <footer className="mt-16 text-center text-gray-600 text-sm">
           <p className="flex items-center justify-center gap-2">
             <span className="text-gray-500">Powered by</span>
             <span className="text-farm-cyan font-semibold">Cardano</span>
             <span className="text-gray-500">•</span>
             <span className="text-gray-500">Built by</span>
             <span className="text-farm-pink font-semibold">Farm Labs</span>
-          </p>
-          <p className="text-gray-700">
-            Network: <span className="text-farm-pink font-medium">{import.meta.env.VITE_NETWORK}</span>
           </p>
         </footer>
       </div>
