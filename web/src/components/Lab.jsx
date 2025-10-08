@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Text, Box, Cylinder, Sphere, Environment, Float, useTexture } from '@react-three/drei';
+import { OrbitControls, Box, Cylinder, Sphere, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import AdminDashboard from './AdminDashboard';
 import BoosterPack from './BoosterPack';
@@ -66,28 +66,8 @@ function ProductionTank({ pending, maxCapacity = 100 }) {
         <meshStandardMaterial color="#444" metalness={0.9} roughness={0.3} />
       </Cylinder>
       
-      {/* Warning Label */}
-      <Text
-        position={[0, 0, 1.3]}
-        fontSize={0.15}
-        color="#ffaa00"
-        anchorX="center"
-        anchorY="middle"
-        font="/fonts/inter-bold.woff"
-      >
-        ⚠ COKE LAB
-      </Text>
-
-      {/* Fill Level Indicator */}
-      <Text
-        position={[0, -0.5, 1.3]}
-        fontSize={0.2}
-        color="#00ffff"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {pending.toFixed(1)} COKE
-      </Text>
+      {/* Warning Label - Removed text to avoid font loading issues */}
+      {/* Fill Level shown in HUD instead */}
     </group>
   );
 }
@@ -141,16 +121,7 @@ function PowerGenerator({ basePower }) {
         </group>
       ))}
 
-      {/* Power Text */}
-      <Text
-        position={[0, -1.2, 0]}
-        fontSize={0.15}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-      >
-        POWER: {basePower}
-      </Text>
+      {/* Power display shown in HUD */}
 
       {/* Base Platform */}
       <Cylinder args={[0.8, 0.8, 0.2, 32]} position={[0, -1, 0]}>
@@ -193,15 +164,7 @@ function NetworkVisualizer({ networkShare }) {
           />
         </Box>
       ))}
-      <Text
-        position={[0, -0.8, 0]}
-        fontSize={0.15}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-      >
-        NETWORK: {networkShare.toFixed(4)}%
-      </Text>
+      {/* Network display shown in HUD */}
     </group>
   );
 }
