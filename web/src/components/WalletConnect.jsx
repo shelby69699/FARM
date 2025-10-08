@@ -38,27 +38,11 @@ function WalletConnect({ onConnect, onDisconnect }) {
   };
 
   if (isConnected) {
-    return (
-      <div className="fixed top-4 right-4 z-50 bg-black/90 backdrop-blur-md border border-farm-cyan/30 rounded-lg px-3 py-2 shadow-lg shadow-farm-cyan/10">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="text-xs text-gray-400">
-            <span className="capitalize text-farm-cyan font-medium">{selectedWallet}</span>
-          </span>
-          <button
-            onClick={handleDisconnect}
-            className="ml-2 px-2 py-1 text-[10px] bg-zinc-800 hover:bg-zinc-700 text-gray-400 hover:text-white rounded transition-colors"
-          >
-            Disconnect
-          </button>
-        </div>
-      </div>
-    );
+    return null; // Don't render anything when connected - handled in App.jsx
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center px-4">
-      <div className="max-w-xl w-full card border-farm-cyan/30">
+    <div className="card border-farm-cyan/30">
         <h3 className="text-sm font-medium mb-4 text-center text-gray-400 uppercase tracking-wide">Connect Wallet</h3>
         
         {error && (

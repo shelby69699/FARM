@@ -84,24 +84,36 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-zinc-950 via-zinc-900 to-black">
-      {/* Wallet Connection - Fixed on side when connected */}
-      <WalletConnect 
-        onConnect={setLucid} 
-        onDisconnect={() => {
-          setLucid(null);
-          setAddress(null);
-          setHasLab(false);
-        }}
-      />
+      {/* Wallet Connection - Minimal badge when connected */}
+      {lucid && (
+        <div className="fixed top-4 right-4 z-50 bg-black/90 backdrop-blur-md border border-farm-cyan/30 rounded-lg px-3 py-2 shadow-lg shadow-farm-cyan/10">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-xs text-gray-400">
+              <span className="capitalize text-farm-cyan font-medium">Connected</span>
+            </span>
+            <button
+              onClick={() => {
+                setLucid(null);
+                setAddress(null);
+                setHasLab(false);
+              }}
+              className="ml-2 px-2 py-1 text-[10px] bg-zinc-800 hover:bg-zinc-700 text-gray-400 hover:text-white rounded transition-colors"
+            >
+              Disconnect
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="flex-grow px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <header className="text-center pt-2 mb-4 relative">
-            {/* Info Button - Top Right (shifted down when wallet connected) */}
+            {/* Info Button - Top Right */}
             <button
               onClick={() => setShowInfo(true)}
-              className={`absolute top-2 right-0 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-lg transition-all text-sm text-gray-400 hover:text-white flex items-center gap-2 ${lucid ? 'mt-12' : ''}`}
+              className="absolute top-2 right-0 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-lg transition-all text-sm text-gray-400 hover:text-white flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -124,6 +136,18 @@ function App() {
               Build your empire on Cardano
             </p>
           </header>
+
+        {/* Wallet Connection - Centered on Page */}
+        <div className="flex items-center justify-center min-h-[40vh]">
+          <WalletConnect 
+            onConnect={setLucid} 
+            onDisconnect={() => {
+              setLucid(null);
+              setAddress(null);
+              setHasLab(false);
+            }}
+          />
+        </div>
 
         {/* Connected State */}
         {lucid && address && (
