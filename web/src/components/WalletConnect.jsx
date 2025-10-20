@@ -61,7 +61,7 @@ function WalletConnect({ onConnect, onDisconnect }) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {wallets.map((wallet) => (
               <button
                 key={wallet.name}
