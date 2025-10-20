@@ -1,23 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { getWalletUtxos, calculateTokenBalance, calculateAdaBalance, getCokeUnit } from '../lib/lucid';
+import { getWalletUtxos, calculateAdaBalance } from '../lib/lucid';
 
 function BalanceCard({ lucid, address }) {
   const [adaBalance, setAdaBalance] = useState(0n);
-  const [cokeBalance, setCokeBalance] = useState(0n);
   const [loading, setLoading] = useState(true);
-
-  const COKE_UNIT = getCokeUnit();
 
   const loadBalances = async () => {
     try {
       setLoading(true);
       const utxos = await getWalletUtxos(lucid);
-      
       const ada = calculateAdaBalance(utxos);
-      const coke = calculateTokenBalance(utxos, COKE_UNIT);
-      
       setAdaBalance(ada);
-      setCokeBalance(coke);
     } catch (error) {
       console.error('Error loading balances:', error);
     } finally {
@@ -36,15 +29,6 @@ function BalanceCard({ lucid, address }) {
 
   const formatAda = (lovelace) => {
     return (Number(lovelace) / 1_000_000).toFixed(2);
-  };
-
-  const formatCoke = (amount) => {
-    return Number(amount).toLocaleString();
-  };
-
-  const shortenAddress = (addr) => {
-    if (!addr) return '';
-    return `${addr.slice(0, 15)}...${addr.slice(-10)}`;
   };
 
   return (
@@ -66,32 +50,13 @@ function BalanceCard({ lucid, address }) {
         <p className="font-mono text-xs text-gray-400 break-all">{address}</p>
       </div>
 
-      {/* Balances */}
-      <div className="grid grid-cols-2 gap-3">
-        {/* ADA Balance */}
-        <div className="bg-black rounded p-3 border border-zinc-800">
-          <p className="text-[10px] text-gray-600 mb-1 uppercase">ADA Balance</p>
-          <p className="text-2xl font-bold text-farm-cyan">
-            ₳ {formatAda(adaBalance)}
-          </p>
-        </div>
-
-        {/* COKE Balance */}
-        <div className="bg-black rounded p-3 border border-zinc-800">
-          <p className="text-[10px] text-gray-600 mb-1 uppercase">COKE Balance</p>
-          <p className="text-2xl font-bold text-farm-pink">
-            {formatCoke(cokeBalance)}
-          </p>
-        </div>
+      {/* ADA Balance - Full Width */}
+      <div className="bg-black rounded p-4 border border-zinc-800">
+        <p className="text-[10px] text-gray-600 mb-1 uppercase">ADA Balance</p>
+        <p className="text-3xl font-bold text-farm-cyan">
+          ₳ {formatAda(adaBalance)}
+        </p>
       </div>
-
-      {cokeBalance === 0n && (
-        <div className="mt-3 p-2 bg-yellow-900/10 border border-yellow-600/30 rounded">
-          <p className="text-yellow-400 text-xs">
-            ⚠ You need COKE tokens to activate your lab
-          </p>
-        </div>
-      )}
     </div>
   );
 }
