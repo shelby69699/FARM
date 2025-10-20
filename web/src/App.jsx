@@ -114,7 +114,7 @@ function App() {
             <div className="absolute top-2 left-0 flex items-center gap-3">
               {/* Buy Token Button */}
               <a
-                href="https://app.dexhunter.io/swap?tokenIdSell=&tokenIdBuy=2b807fe1e0def03a1bbe4c09b6b0471197c61959d78c5b503d36d82f434f4b45"
+                href="https://app.dexhunter.io/swap?tokenIdSell=6b69aa662bfa64608c15c08c9a72897cb9a3a6d1d1eb2d3cb053b13c434f4b45&tokenIdBuy="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-lg transition-all text-sm text-white font-bold flex items-center gap-2 shadow-lg"
