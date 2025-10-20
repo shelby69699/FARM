@@ -46,7 +46,7 @@ export function getAvailableWallets() {
   if (!window.cardano) return [];
   
   const wallets = [];
-  const knownWallets = ['nami', 'eternl', 'flint', 'lace', 'yoroi', 'gerowallet', 'typhoncip30'];
+  const knownWallets = ['nami', 'eternl', 'flint', 'lace', 'yoroi', 'vespr', 'gerowallet', 'typhoncip30'];
   
   for (const walletName of knownWallets) {
     if (window.cardano[walletName]) {

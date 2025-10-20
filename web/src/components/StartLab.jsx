@@ -1,101 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { sendPayment, getCokeUnit, getWalletUtxos, calculateTokenBalance } from '../lib/lucid';
+import { sendPayment, getWalletUtxos, calculateAdaBalance } from '../lib/lucid';
+
+const TREASURY_ADDRESS = 'addr1qxt3zjdf8txg9nm2kmheeaewljt03u2wp7k8dqnk3rdnlcupw928nm9v00v9p5epk5gt4umj26dqeqgpzksej9wsecwq9w2lvw';
+const LAB_COST_ADA = 100;
 
 function StartLab({ lucid, address, onLabActivated }) {
-  const [config, setConfig] = useState(null);
+  const [adaBalance, setAdaBalance] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [txHash, setTxHash] = useState(null);
-  const [verifying, setVerifying] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE;
-  const MIN_ADA = parseInt(import.meta.env.VITE_MIN_ADA_FOR_TREASURY || '2000000');
-  const COKE_UNIT = getCokeUnit();
 
-  // Load config from backend
+  // Load wallet balance
   useEffect(() => {
-    const loadConfig = async () => {
+    const loadBalance = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/config`);
-        const data = await response.json();
-        setConfig(data);
+        const utxos = await getWalletUtxos(lucid);
+        const balance = calculateAdaBalance(utxos);
+        setAdaBalance(Number(balance) / 1_000_000);
       } catch (err) {
-        console.error('Error loading config:', err);
-        setError('Failed to load configuration');
+        console.error('Error loading balance:', err);
       }
     };
-    loadConfig();
-  }, []);
+    loadBalance();
+  }, [lucid]);
 
   const handleStartLab = async () => {
-    if (!config) {
-      setError('Configuration not loaded');
-      return;
-    }
-
     setLoading(true);
     setError(null);
-    setTxHash(null);
+    setSuccess(false);
 
     try {
-      const isAdmin = address === config.treasuryAddress;
-
-      // Admin activates without payment
-      if (isAdmin) {
-        console.log('🔐 Admin activation - skipping payment');
-        
-        // Activate lab on backend without txHash
-        const response = await fetch(`${API_BASE}/api/start`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            address: address
-          })
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.details || errorData.error || 'Failed to activate admin lab');
-        }
-
-        const result = await response.json();
-        console.log('Admin lab activated:', result);
-
-        // Success!
-        onLabActivated();
-        return;
+      // Check if user has enough ADA
+      if (adaBalance < LAB_COST_ADA + 2) {
+        throw new Error(`Insufficient ADA. Need ${LAB_COST_ADA + 2} ADA (${LAB_COST_ADA} + 2 for fees)`);
       }
 
-      // Regular users must pay
-      // Check if user has enough COKE
-      const utxos = await getWalletUtxos(lucid);
-      const cokeBalance = calculateTokenBalance(utxos, COKE_UNIT);
-      
-      if (cokeBalance < BigInt(config.startLabPrice)) {
-        throw new Error(`Insufficient COKE balance. Need ${config.startLabPrice.toLocaleString()}, have ${cokeBalance.toString()}`);
-      }
-
-      // Build and send payment transaction
+      // Send payment transaction
       const assets = {
-        lovelace: BigInt(MIN_ADA),
-        [COKE_UNIT]: BigInt(config.startLabPrice)
+        lovelace: BigInt(LAB_COST_ADA * 1_000_000)
       };
 
-      console.log('Sending payment to treasury:', config.treasuryAddress);
-      console.log('Assets:', assets);
-
-      const hash = await sendPayment(lucid, config.treasuryAddress, assets);
+      console.log('Sending payment to treasury:', TREASURY_ADDRESS);
+      const hash = await sendPayment(lucid, TREASURY_ADDRESS, assets);
       console.log('Transaction submitted:', hash);
-      
-      setTxHash(hash);
-      setVerifying(true);
 
-      // Wait a bit for transaction to be seen by Blockfrost
+      // Wait for transaction to be seen
       await new Promise(resolve => setTimeout(resolve, 5000));
 
-      // Verify and activate lab on backend
+      // Activate lab on backend
       const response = await fetch(`${API_BASE}/api/start`, {
         method: 'POST',
         headers: {
@@ -109,125 +63,89 @@ function StartLab({ lucid, address, onLabActivated }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.details || errorData.error || 'Failed to activate lab');
+        throw new Error(errorData.error || 'Failed to activate lab');
       }
 
-      const result = await response.json();
-      console.log('Lab activated:', result);
+      setSuccess(true);
+      
+      // Reload balance
+      const utxos = await getWalletUtxos(lucid);
+      const balance = calculateAdaBalance(utxos);
+      setAdaBalance(Number(balance) / 1_000_000);
 
-      // Success!
-      setVerifying(false);
-      onLabActivated();
+      // Wait a moment to show success, then activate
+      setTimeout(() => {
+        onLabActivated();
+      }, 2000);
 
     } catch (err) {
       console.error('Start lab error:', err);
       setError(err.message);
-      setVerifying(false);
     } finally {
       setLoading(false);
     }
   };
 
-  if (!config) {
-    return (
-      <div className="card text-center py-12">
-        <p className="text-gray-400 animate-pulse">Loading...</p>
-      </div>
-    );
-  }
-
-  const isAdmin = address === config.treasuryAddress;
-
   return (
-    <div className="card">
-      <h2 className="text-xl font-medium mb-6 text-center text-gray-400">
-        {isAdmin ? '🔐 Admin Activation' : '🧪 Activate Your Lab'}
-      </h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-black p-4">
+      <div className="w-full max-w-md">
+        
+        {/* ADA Balance Card */}
+        <div className="bg-gradient-to-br from-zinc-900 to-black border border-zinc-800 rounded-2xl p-8 mb-6">
+          <div className="text-center">
+            <div className="text-sm text-gray-500 uppercase tracking-wider mb-3">Your Balance</div>
+            <div className="text-6xl font-bold text-white mb-2">
+              ₳ {adaBalance.toFixed(2)}
+            </div>
+            <div className="text-sm text-gray-600 font-mono">{address.slice(0, 20)}...{address.slice(-20)}</div>
+          </div>
+        </div>
 
-      {isAdmin && (
-        <div className="bg-purple-900/30 border border-purple-500/50 rounded-lg p-4 mb-6">
-          <p className="text-purple-200 text-sm text-center font-medium">
-            ⚡ Admin wallet detected - Free activation (no payment required)
+        {/* Activation Card */}
+        <div className="bg-gradient-to-br from-zinc-900 to-black border border-zinc-800 rounded-2xl p-8">
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-white mb-2">Start Your Lab</h1>
+            <p className="text-gray-500">Activate your laboratory and start earning</p>
+          </div>
+
+          {/* Cost Display */}
+          <div className="bg-black border border-zinc-800 rounded-xl p-6 mb-6 text-center">
+            <div className="text-sm text-gray-500 uppercase tracking-wider mb-2">Activation Cost</div>
+            <div className="text-5xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent mb-2">
+              {LAB_COST_ADA}
+            </div>
+            <div className="text-xl text-gray-400">ADA</div>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 mb-6">
+              <p className="text-red-300 text-sm text-center">{error}</p>
+            </div>
+          )}
+
+          {/* Success Message */}
+          {success && (
+            <div className="bg-green-900/20 border border-green-500/30 rounded-xl p-4 mb-6">
+              <p className="text-green-300 text-sm text-center">✅ Lab activated successfully!</p>
+            </div>
+          )}
+
+          {/* Start Button */}
+          <button
+            onClick={handleStartLab}
+            disabled={loading || success || adaBalance < LAB_COST_ADA + 2}
+            className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-lg"
+          >
+            {loading ? 'Processing...' : success ? 'Activating...' : 'Start Lab'}
+          </button>
+
+          <p className="text-center text-xs text-gray-600 mt-4">
+            Payment will be sent to treasury address
           </p>
         </div>
-      )}
 
-      <div className="mb-6">
-        <div className="bg-gradient-to-br from-farm-pink/5 via-farm-purple/5 to-farm-cyan/5 border border-farm-cyan/20 rounded p-4 mb-4">
-          <h3 className="text-sm font-medium mb-3 text-farm-cyan uppercase tracking-wide">What you get:</h3>
-          <ul className="space-y-2 text-sm text-gray-400">
-            <li className="flex items-center gap-2">
-              <span className="text-farm-cyan">▸</span>
-              <strong className="text-white">{config.basePower}</strong> Grow Power to start
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-farm-cyan">▸</span>
-              Earn COKE rewards continuously
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-farm-cyan">▸</span>
-              Share of global emissions based on your power
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-farm-cyan">▸</span>
-              Claim rewards anytime
-            </li>
-          </ul>
-        </div>
-
-        {!isAdmin && (
-          <>
-            <div className="bg-black rounded p-4 mb-4 border border-zinc-800">
-              <p className="text-[10px] text-gray-600 mb-2 uppercase tracking-wide">Activation Cost</p>
-              <p className="text-4xl font-bold text-farm-pink mb-1">
-                {config.startLabPrice.toLocaleString()}
-              </p>
-              <p className="text-sm text-farm-cyan">COKE</p>
-              <p className="text-xs text-gray-600 mt-2">
-                + {(MIN_ADA / 1_000_000).toFixed(2)} ADA (transaction minimum)
-              </p>
-            </div>
-
-            <div className="bg-black rounded p-3 mb-4 border border-zinc-800">
-              <p className="text-[10px] text-gray-600 mb-1 uppercase">Treasury Address</p>
-              <p className="font-mono text-[11px] break-all text-gray-500">
-                {config.treasuryAddress}
-              </p>
-            </div>
-          </>
-        )}
       </div>
-
-      {error && (
-        <div className="bg-red-900/50 border border-red-500 rounded-lg p-4 mb-6">
-          <p className="text-red-200">❌ {error}</p>
-        </div>
-      )}
-
-      {txHash && (
-        <div className="bg-blue-900/50 border border-blue-500 rounded-lg p-4 mb-6">
-          <p className="text-blue-200 mb-2">
-            {verifying ? '⏳ Verifying transaction...' : '✅ Transaction submitted'}
-          </p>
-          <p className="font-mono text-xs break-all text-gray-300">
-            {txHash}
-          </p>
-        </div>
-      )}
-
-      <button
-        onClick={handleStartLab}
-        disabled={loading || verifying}
-        className="btn-primary w-full"
-      >
-        {loading ? 'Activating...' : verifying ? 'Verifying...' : isAdmin ? '⚡ Instant Activate' : '🚀 Start Lab'}
-      </button>
-
-      {!isAdmin && (
-        <p className="text-center text-xs text-gray-600 mt-3">
-          Make sure you have enough COKE tokens and ADA for transaction fees
-        </p>
-      )}
     </div>
   );
 }
