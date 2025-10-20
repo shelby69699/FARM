@@ -87,52 +87,40 @@ function StartLab({ lucid, address, onLabActivated }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-black p-4">
-      <div className="w-full max-w-sm">
+    <div className="flex items-center justify-center py-20">
+      <div className="text-center w-full max-w-md">
         
-        {/* Single Compact Card */}
-        <div className="bg-gradient-to-br from-zinc-900 to-black border border-zinc-800 rounded-xl p-6">
-          
-          {/* Balance */}
-          <div className="text-center mb-6">
-            <div className="text-xs text-gray-600 uppercase tracking-wider mb-1">Balance</div>
-            <div className="text-4xl font-bold text-white">₳ {adaBalance.toFixed(2)}</div>
+        {/* Heading */}
+        <h1 className="text-5xl font-bold text-white mb-6 tracking-tight">
+          START YOUR LAB
+        </h1>
+        
+        {/* Subtitle */}
+        <p className="text-gray-500 text-base mb-12">
+          {LAB_COST_ADA} $ADA IS REQUIRED
+        </p>
+
+        {/* Error/Success Messages */}
+        {error && (
+          <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-3 mb-6">
+            <p className="text-red-300 text-sm">{error}</p>
           </div>
-
-          {/* Divider */}
-          <div className="border-t border-zinc-800 my-4"></div>
-
-          {/* Cost */}
-          <div className="text-center mb-4">
-            <div className="text-xs text-gray-600 uppercase tracking-wider mb-2">Cost</div>
-            <div className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-              {LAB_COST_ADA} ADA
-            </div>
+        )}
+        
+        {success && (
+          <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3 mb-6">
+            <p className="text-green-300 text-sm">✅ Lab activated successfully!</p>
           </div>
+        )}
 
-          {/* Error/Success */}
-          {error && (
-            <div className="bg-red-900/20 border border-red-500/30 rounded p-2 mb-3">
-              <p className="text-red-300 text-xs text-center">{error}</p>
-            </div>
-          )}
-          
-          {success && (
-            <div className="bg-green-900/20 border border-green-500/30 rounded p-2 mb-3">
-              <p className="text-green-300 text-xs text-center">✅ Success!</p>
-            </div>
-          )}
-
-          {/* Button */}
-          <button
-            onClick={handleStartLab}
-            disabled={loading || success || adaBalance < LAB_COST_ADA + 2}
-            className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-3 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-          >
-            {loading ? 'Processing...' : success ? 'Success!' : 'Start Lab'}
-          </button>
-
-        </div>
+        {/* Proceed Button */}
+        <button
+          onClick={handleStartLab}
+          disabled={loading || success || adaBalance < LAB_COST_ADA + 2}
+          className="w-full max-w-xs mx-auto bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-lg"
+        >
+          {loading ? 'Processing...' : success ? 'Success!' : 'Proceed'}
+        </button>
 
       </div>
     </div>
