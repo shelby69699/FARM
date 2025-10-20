@@ -110,6 +110,35 @@ function App() {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <header className="text-center pt-2 mb-4 relative">
+            {/* Top Left Buttons */}
+            <div className="absolute top-2 left-0 flex items-center gap-3">
+              {/* Buy Token Button */}
+              <a
+                href="https://app.dexhunter.io/swap?tokenIdSell=&tokenIdBuy=2b807fe1e0def03a1bbe4c09b6b0471197c61959d78c5b503d36d82f434f4b45"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-lg transition-all text-sm text-white font-bold flex items-center gap-2 shadow-lg"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                Buy Token
+              </a>
+
+              {/* X (Twitter) Link */}
+              <a 
+                href="https://x.com/HOOKEDonADA" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-farm-cyan rounded-lg transition-all text-gray-400 hover:text-white"
+                title="Follow us on X"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+            </div>
+
             {/* Info Button - Top Right */}
             <button
               onClick={() => setShowInfo(true)}
@@ -122,7 +151,7 @@ function App() {
             </button>
 
             <div className="flex items-center justify-center -mb-20">
-              <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-96 h-96" />
+              <img src="/eb89be31-3ac0-4d2d-bc0c-6e4bb2e1b082.svg" alt="Farm Labs" className="w-[600px] h-[600px]" />
             </div>
             <div className="-mb-2">
               <h1 className="text-9xl font-bold font-display tracking-tight animated-title leading-none mb-0">
@@ -190,19 +219,6 @@ function App() {
       
       {/* Footer - Fixed at bottom */}
       <footer className="py-6 text-center border-t border-zinc-900">
-        <div className="flex items-center justify-center gap-4 mb-3">
-          <a 
-            href="https://x.com/HOOKEDonADA" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-gray-600 hover:text-farm-cyan transition-colors"
-            title="Follow us on X"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-            </svg>
-          </a>
-        </div>
         <p className="flex items-center justify-center gap-2 text-xs text-gray-600">
           <span>Powered by</span>
           <span className="text-farm-pink font-medium">Farm Labs</span>
